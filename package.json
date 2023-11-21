@@ -1,9 +1,9 @@
 {
   "name": "upgrade",
-  "module": "index.ts",
+  "module": "file-server.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch run index.tsx"
+    "dev": "bun --watch run file-server.ts"
   },
   "devDependencies": {
     "bun-types": "latest"

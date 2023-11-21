@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ dark: false }" :class="{ dark }">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upgrade 🃏</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <text y='.9em' font-size='90'>🃏</text></svg>"
+    />
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+    <script>
+      // set peer.id via network (async)
+      const peer = new Peer(localStorage.getItem("peer_id"));
+
+      // peer.id has been set
+      peer.on("open", (peer_id) => {
+        localStorage.setItem("peer_id", peer_id);
+      });
+
+      const nickname = localStorage.getItem("nickname");
+      const avatar_seed =
+        localStorage.getItem("avatar_seed") ??
+        ((seed = window.crypto.randomUUID()),
+        localStorage.setItem("avatar_seed", seed),
+        seed);
+
+      const urlSearchParams = new URLSearchParams(location.search);
+      const room_id = urlSearchParams.get("room");
+
+      const isHost = room_id === null;
+
+      function avatarImgSrc(options = {}) {
+        options = { seed: window.crypto.randomUUID(), radius: 15, ...options };
+        const url = new URL("https://api.dicebear.com/7.x/lorelei/svg");
+        Object.entries(options).forEach(([k, v]) => url.searchParams.set(k, v));
+        return url;
+      }
+
+      document.addEventListener("alpine:init", async () => {
+        await Alpine.data("state", () => {
+          let peer_id = peer.id;
+          return {
+            isHost,
+            peer_id,
+            nickname,
+            avatar_seed,
+            avatarImgSrc,
+            room_id,
+          };
+        });
+      });
+
+      function getID() {
+        if (peer.id !== undefined) return Promise.resolve(peer.id);
+        return new Promise((resolve) => peer.on("open", resolve));
+      }
+
+      async function openRoom() {
+        // initialise peer
+        const room_peer = await new Promise((resolve) => {
+          const peer = new Peer();
+          peer.on("open", (room_peer_id) => {
+            resolve(peer);
+          });
+        });
+
+        // update URL
+        history.pushState({}, "", "?room=" + room_peer.id);
+
+        // show room invite
+
+        // show connected players
+
+        // show start game button
+      }
+
+      function setLocalStorage(key) {
+        return (val) => localStorage.setItem(key, val);
+      }
+
+      function copyRoomLinkToClipboard() {
+        navigator.clipboard.writeText(location.href);
+      }
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/papercss/dist/paper.min.css"
+    />
+    <style>
+      [x-cloak] {
+        display: none;
+      }
+
+      button,
+      .not-selectable {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+    </style>
+  </head>
+
+  <body
+    x-cloak
+    x-data="state()"
+    class="container paper"
+    style="border: 0; box-shadow: none; padding-top: 0; padding-bottom: 0"
+  >
+    <header
+      class="container row not-selectable"
+      style="justify-content: space-between; width: 100%"
+    >
+      <h3 style="margin-top: 20px; margin-bottom: 20px">Upgrade 🃏</h3>
+      <span popover-left="toggle dark mode">
+        <button x-on:click="dark = !dark" class="btn-small">☀</button>
+      </span>
+    </header>
+
+    <main class="paper border-2 border">
+      <section id="player" class="container card border col">
+        <div
+          class="container"
+          style="position: relative; max-width: 250px; max-height: 250px"
+        >
+          <img
+            draggable="false"
+            id="avatar"
+            alt="avatar"
+            :src="avatarImgSrc({seed:avatar_seed})"
+          />
+        </div>
+        <input
+          id="nickname_input"
+          x-ref="nickname_input"
+          type="text"
+          placeholder="Nickname goes here"
+          class="border-3"
+          style="text-align: center; font-size: xx-large"
+          maxlength="24"
+          x-init="$watch('nickname', setLocalStorage('nickname'))"
+          x-model="nickname"
+        />
+      </section>
+      <section
+        id="actions"
+        class="row flex-center"
+        style="margin-top: 20px; margin-bottom: 0"
+      >
+        <button
+          id="createRoom_button"
+          x-on:click="openRoom"
+          class="margin"
+          style="font-size: xx-large; font-variant: small-caps"
+        >
+          ⚔ Open Room
+        </button>
+        <button
+          id="invite_button"
+          x-on:click="copyRoomLinkToClipboard"
+          x-show="false"
+          class="margin"
+        >
+          🔗 Invite
+        </button>
+      </section>
+    </main>
+
+    <footer style="text-align: right">
+      <h6 style="margin-bottom: 0">
+        <i
+          ><p
+            xmlns:cc="http://creativecommons.org/ns#"
+            xmlns:dct="http://purl.org/dc/terms/"
+          >
+            <a
+              property="dct:title"
+              rel="cc:attributionURL"
+              href="https://github.com/jgrunik/upgrade"
+              >Upgrade</a
+            >
+            by
+            <a
+              rel="cc:attributionURL dct:creator"
+              property="cc:attributionName"
+              href="https://github.com/jgrunik"
+              >Joshua Grunik</a
+            >
+            is licensed under
+            <a
+              href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1"
+              target="_blank"
+              rel="license noopener noreferrer"
+              style="display: inline-block"
+              >CC BY-NC-SA 4.0<img
+                style="
+                  height: 22px !important;
+                  margin-left: 3px;
+                  vertical-align: text-bottom;
+                "
+                src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" /><img
+                style="
+                  height: 22px !important;
+                  margin-left: 3px;
+                  vertical-align: text-bottom;
+                "
+                src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" /><img
+                style="
+                  height: 22px !important;
+                  margin-left: 3px;
+                  vertical-align: text-bottom;
+                "
+                src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" /><img
+                style="
+                  height: 22px !important;
+                  margin-left: 3px;
+                  vertical-align: text-bottom;
+                "
+                src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"
+            /></a></p
+        ></i>
+      </h6>
+    </footer>
+  </body>
+</html>
