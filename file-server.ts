@@ -1,6 +1,6 @@
 import { file } from "bun";
 
-const BASE_DIR = "public";
+const BASE_DIR = "doc";
 
 const server = Bun.serve({
   // hostname: "0.0.0.0",
