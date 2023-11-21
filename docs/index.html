@@ -104,6 +104,11 @@
         -ms-user-select: none;
         user-select: none;
       }
+
+      inut,
+      input:focus {
+        border-style: dashed;
+      }
     </style>
   </head>
 
@@ -141,7 +146,7 @@
           x-ref="nickname_input"
           type="text"
           placeholder="Nickname goes here"
-          class="border-3"
+          class="border-5 border-dashed"
           style="text-align: center; font-size: xx-large"
           maxlength="24"
           x-init="$watch('nickname', setLocalStorage('nickname'))"
