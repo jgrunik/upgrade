@@ -54,11 +54,6 @@
         });
       });
 
-      function getID() {
-        if (peer.id !== undefined) return Promise.resolve(peer.id);
-        return new Promise((resolve) => peer.on("open", resolve));
-      }
-
       async function openRoom() {
         // initialise peer
         const room_peer = await new Promise((resolve) => {
@@ -105,9 +100,24 @@
         user-select: none;
       }
 
-      inut,
-      input:focus {
+      #avatar_button,
+      #avatar_button:focus {
         border-style: dashed;
+      }
+
+      #nickname_input,
+      #nickname_input:focus {
+        border-style: dashed;
+      }
+
+      footer p > span > img {
+        border: none;
+      }
+
+      footer p > a,
+      footer p > a:visited {
+        color: var(--secondary);
+        background-image: none;
       }
     </style>
   </head>
@@ -115,61 +125,77 @@
   <body
     x-cloak
     x-data="state()"
-    class="container paper"
-    style="border: 0; box-shadow: none; padding-top: 0; padding-bottom: 0"
+    class="paper"
+    style="
+      margin: 0;
+      border: 0;
+      box-shadow: none;
+      padding-top: 0;
+      height: 100vh;
+      max-height: 100vh;
+      display: grid;
+      align-content: space-between;
+    "
   >
     <header
       class="container row not-selectable"
       style="justify-content: space-between; width: 100%"
     >
       <h3 style="margin-top: 20px; margin-bottom: 20px">Upgrade 🃏</h3>
-      <span popover-left="toggle dark mode">
-        <button x-on:click="dark = !dark" class="btn-small">☀</button>
-      </span>
+
+      <button
+        popover-left="toggle dark mode"
+        x-on:click="dark = !dark"
+        class="btn-small"
+        style="margin-right: 0"
+      >
+        ☀
+      </button>
     </header>
 
-    <main class="paper border-2 border">
-      <section id="player" class="container card border col">
-        <div
-          class="container"
-          style="position: relative; max-width: 250px; max-height: 250px"
+    <main class="container paper border-2 border col">
+      <section style="display: grid; justify-items: center">
+        <button
+          id="avatar_button"
+          class="container border-3 border-dashed shadow shadow-small"
+          style="padding: 0px; margin: 20px; max-width: 28ch"
         >
           <img
-            draggable="false"
             id="avatar"
             alt="avatar"
             :src="avatarImgSrc({seed:avatar_seed})"
+            x-cloak
+            draggable="false"
+            style="border: 0; margin: 0"
           />
-        </div>
+        </button>
         <input
           id="nickname_input"
           x-ref="nickname_input"
           type="text"
           placeholder="Nickname goes here"
-          class="border-5 border-dashed"
-          style="text-align: center; font-size: xx-large"
-          maxlength="24"
+          class="container border-3 border-dashed shadow shadow-hover shadow-small"
           x-init="$watch('nickname', setLocalStorage('nickname'))"
           x-model="nickname"
+          maxlength="24"
+          style="text-align: center; font-size: x-large; max-width: 24ch"
         />
       </section>
       <section
-        id="actions"
         class="row flex-center"
         style="margin-top: 20px; margin-bottom: 0"
       >
         <button
-          id="createRoom_button"
           x-on:click="openRoom"
-          class="margin"
+          class="btn-secondary-outline"
           style="font-size: xx-large; font-variant: small-caps"
         >
           ⚔ Open Room
         </button>
         <button
-          id="invite_button"
           x-on:click="copyRoomLinkToClipboard"
           x-show="false"
+          x-cloak
           class="margin"
         >
           🔗 Invite
@@ -178,67 +204,50 @@
     </main>
 
     <footer style="text-align: right">
-      <h6 style="margin-bottom: 0">
-        <p
-          xmlns:cc="http://creativecommons.org/ns#"
-          xmlns:dct="http://purl.org/dc/terms/"
+      <p
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:dct="http://purl.org/dc/terms/"
+        style="margin-bottom: 0; font-style: italic; font-size: small"
+      >
+        <a
+          rel="cc:attributionURL"
+          property="dct:title"
+          href="https://github.com/jgrunik/upgrade"
+          >Upgrade</a
         >
-          <i>
-            <a
-              property="dct:title"
-              rel="cc:attributionURL"
-              href="https://github.com/jgrunik/upgrade"
-              >Upgrade</a
-            >
-            by
-            <a
-              rel="cc:attributionURL dct:creator"
-              property="cc:attributionName"
-              href="https://github.com/jgrunik"
-              >Joshua Grunik</a
-            >
-            is licensed under
-            <a
-              href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1"
-              target="_blank"
-              rel="license noopener noreferrer"
-              >CC BY-NC-SA 4.0</a
-            >
-            <span style="margin-left: 1ch; display: inline-flex">
-              <img
-                style="
-                  height: 22px !important;
-                  margin-left: 3px;
-                  vertical-align: text-bottom;
-                "
-                src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
-              />
-              <img
-                style="
-                  height: 22px !important;
-                  margin-left: 3px;
-                  vertical-align: text-bottom;
-                "
-                src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"
-              />
-              <img
-                style="
-                  height: 22px !important;
-                  margin-left: 3px;
-                  vertical-align: text-bottom;
-                "
-                src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"
-              /><img
-                style="
-                  height: 22px !important;
-                  margin-left: 3px;
-                  vertical-align: text-bottom;
-                "
-                src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"
-              /> </span
-          ></i>
-        </p>
-      </h6>
+        by
+        <a
+          rel="cc:attributionURL dct:creator"
+          property="cc:attributionName"
+          href="https://github.com/jgrunik"
+          >Joshua Grunik</a
+        >
+        is licensed under
+        <a
+          rel="license noopener noreferrer"
+          href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1"
+          target="_blank"
+          >CC BY-NC-SA 4.0</a
+        >
+        <br />
+        <span style="display: inline-flex; height: 2ch">
+          <img
+            style="margin-left: 3px; vertical-align: text-bottom"
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+          />
+          <img
+            style="margin-left: 3px; vertical-align: text-bottom"
+            src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"
+          />
+          <img
+            style="margin-left: 3px; vertical-align: text-bottom"
+            src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"
+          /><img
+            style="margin-left: 3px; vertical-align: text-bottom"
+            src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"
+          />
+        </span>
+      </p>
     </footer>
   </body>
 </html>
