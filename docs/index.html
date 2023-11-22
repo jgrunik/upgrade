@@ -1,56 +1,95 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ dark: false }" :class="{ dark }">
+<html lang="en" x-data="state()" :class="{dark: dark_mode}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upgrade 🃏</title>
+    <title>Upgrade</title>
     <link
+      id="favicon"
       rel="icon"
       href="data:image/svg+xml,
       <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-        <text y='.9em' font-size='90'>🃏</text></svg>"
+        <text y='0.6em' font-size='160'>♠</text></svg>"
     />
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script defer src="//unpkg.com/alpinejs"></script>
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+    <script type="module" src="index.js"></script>
     <script>
       // set peer.id via network (async)
       const peer = new Peer(localStorage.getItem("peer_id"));
 
       // peer.id has been set
-      peer.on("open", (peer_id) => {
-        localStorage.setItem("peer_id", peer_id);
-      });
-
-      const nickname = localStorage.getItem("nickname");
-      const avatar_seed =
-        localStorage.getItem("avatar_seed") ??
-        ((seed = window.crypto.randomUUID()),
-        localStorage.setItem("avatar_seed", seed),
-        seed);
-
-      const urlSearchParams = new URLSearchParams(location.search);
-      const room_id = urlSearchParams.get("room");
-
-      const isHost = room_id === null;
-
-      function avatarImgSrc(options = {}) {
-        options = { seed: window.crypto.randomUUID(), radius: 15, ...options };
-        const url = new URL("https://api.dicebear.com/7.x/lorelei/svg");
-        Object.entries(options).forEach(([k, v]) => url.searchParams.set(k, v));
-        return url;
-      }
+      const peer_id = new Promise((resolve) =>
+        peer.on("open", (peer_id) => {
+          localStorage.setItem("peer_id", peer_id);
+          resolve(peer_id);
+        })
+      );
 
       document.addEventListener("alpine:init", async () => {
-        await Alpine.data("state", () => {
-          let peer_id = peer.id;
-          return {
-            isHost,
-            peer_id,
-            nickname,
-            avatar_seed,
-            avatarImgSrc,
-            room_id,
+        await Alpine.data("state", function () {
+          const urlSearchParams = new URLSearchParams(location.search);
+
+          const state = {
+            get peer_id() {
+              return localStorage.getItem("peer_id");
+            },
+            set peer_id(value) {
+              return localStorage.setItem("peer_id", value);
+            },
+            get nickname() {
+              return localStorage.getItem("nickname");
+            },
+            set nickname(value) {
+              return localStorage.setItem("nickname", value);
+            },
+            get avatar_seed() {
+              return localStorage.getItem("avatar_seed");
+            },
+            set avatar_seed(value) {
+              return localStorage.setItem("avatar_seed", value);
+            },
+            dark_mode: localStorage.getItem("dark_mode"),
+            toggle_dark_mode() {
+              localStorage.setItem(
+                "dark_mode",
+                (this.dark_mode = !this.dark_mode)
+              );
+            },
+            room_id: urlSearchParams.get("room"),
+
+            async init() {
+              this.avatar_seed ??=
+                ((seed = window.crypto.randomUUID()),
+                localStorage.setItem("avatar_seed", seed),
+                seed);
+
+              this.isHost = this.room_id === null;
+
+              this.peer_id ??= await peer.id;
+
+              this.dark_mode ??=
+                window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+              this.dark_mode = this.dark_mode.toString() === "true";
+            },
+
+            avatarImgSrc(options = {}) {
+              options = {
+                seed: window.crypto.randomUUID(),
+                radius: 15,
+                ...options,
+              };
+              const url = new URL("https://api.dicebear.com/7.x/lorelei/svg");
+              Object.entries(options).forEach(([k, v]) =>
+                url.searchParams.set(k, v)
+              );
+              return url;
+            },
           };
+
+          return state;
         });
       });
 
@@ -123,8 +162,6 @@
   </head>
 
   <body
-    x-cloak
-    x-data="state()"
     class="paper"
     style="
       margin: 0;
@@ -142,16 +179,15 @@
       class="container row not-selectable"
       style="justify-content: space-between; width: 100%"
     >
-      <h3 style="margin-top: 20px; margin-bottom: 20px">Upgrade 🃏</h3>
+      <h3 style="margin-top: 20px; margin-bottom: 20px">♠ Upgrade</h3>
 
       <button
         popover-left="toggle dark mode"
-        x-on:click="dark = !dark"
         class="btn-small"
         style="margin-right: 0"
-      >
-        ☀
-      </button>
+        x-text="dark_mode ? '🌜︎' : '☀'"
+        x-on:click="toggle_dark_mode()"
+      ></button>
     </header>
 
     <main>
@@ -180,9 +216,8 @@
           id="nickname_input"
           x-ref="nickname_input"
           type="text"
-          placeholder="Nickname goes here"
+          placeholder="nickname goes here ♥"
           class="container border-3 border-dashed shadow shadow-hover shadow-small"
-          x-init="$watch('nickname', setLocalStorage('nickname'))"
           x-model="nickname"
           maxlength="24"
           style="text-align: center; font-size: x-large; max-width: 24ch"

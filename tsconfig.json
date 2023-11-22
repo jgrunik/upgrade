@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "baseUrl": "./src",
+    "paths": { "@components/*": ["components/*"] },
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -11,13 +13,10 @@
     "strict": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "jsx": "react",
-    "jsxFactory": "React.createElement",
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "types": [
-      "bun-types" // add Bun global
-    ]
+    "types": ["web", "bun-types"]
   }
 }
