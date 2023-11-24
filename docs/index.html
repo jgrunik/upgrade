@@ -26,71 +26,61 @@
         })
       );
 
-      document.addEventListener("alpine:init", async () => {
-        await Alpine.data("state", function () {
-          const urlSearchParams = new URLSearchParams(location.search);
+      const urlSearchParams = new URLSearchParams(location.search);
 
-          const state = {
-            get peer_id() {
-              return localStorage.getItem("peer_id");
-            },
-            set peer_id(value) {
-              return localStorage.setItem("peer_id", value);
-            },
-            get nickname() {
-              return localStorage.getItem("nickname");
-            },
-            set nickname(value) {
-              return localStorage.setItem("nickname", value);
-            },
-            get avatar_seed() {
-              return localStorage.getItem("avatar_seed");
-            },
-            set avatar_seed(value) {
-              return localStorage.setItem("avatar_seed", value);
-            },
-            dark_mode: localStorage.getItem("dark_mode"),
-            toggle_dark_mode() {
-              localStorage.setItem(
-                "dark_mode",
-                (this.dark_mode = !this.dark_mode)
-              );
-            },
-            room_id: urlSearchParams.get("room"),
+      const state = {
+        get peer_id() {
+          return localStorage.getItem("peer_id");
+        },
+        set peer_id(value) {
+          return localStorage.setItem("peer_id", value);
+        },
+        get nickname() {
+          return localStorage.getItem("nickname");
+        },
+        set nickname(value) {
+          return localStorage.setItem("nickname", value);
+        },
+        get avatar_seed() {
+          return localStorage.getItem("avatar_seed");
+        },
+        set avatar_seed(value) {
+          return localStorage.setItem("avatar_seed", value);
+        },
+        dark_mode:
+          ((storage = localStorage.getItem("dark_mode")),
+          storage !== null
+            ? storage === "true"
+            : window.matchMedia &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches),
+        toggle_dark_mode() {
+          this.dark_mode = !this.dark_mode;
+          localStorage.setItem("dark_mode", this.dark_mode);
+        },
+        room_id: urlSearchParams.get("room"),
 
-            async init() {
-              this.avatar_seed ??=
-                ((seed = window.crypto.randomUUID()),
-                localStorage.setItem("avatar_seed", seed),
-                seed);
+        async init() {
+          this.avatar_seed ??=
+            ((seed = window.crypto.randomUUID()),
+            localStorage.setItem("avatar_seed", seed),
+            seed);
 
-              this.isHost = this.room_id === null;
+          this.peer_id ??= await peer.id;
+        },
 
-              this.peer_id ??= await peer.id;
+        avatarImgSrc(options = {}) {
+          const url = new URL("https://api.dicebear.com/7.x/lorelei/svg");
+          Object.entries({
+            seed: window.crypto.randomUUID(),
+            radius: 15,
+            ...options,
+          }).forEach(([k, v]) => url.searchParams.set(k, v));
+          return url;
+        },
+      };
 
-              this.dark_mode ??=
-                window.matchMedia &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-              this.dark_mode = this.dark_mode.toString() === "true";
-            },
-
-            avatarImgSrc(options = {}) {
-              options = {
-                seed: window.crypto.randomUUID(),
-                radius: 15,
-                ...options,
-              };
-              const url = new URL("https://api.dicebear.com/7.x/lorelei/svg");
-              Object.entries(options).forEach(([k, v]) =>
-                url.searchParams.set(k, v)
-              );
-              return url;
-            },
-          };
-
-          return state;
-        });
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("state", () => state);
       });
 
       async function openRoom() {
@@ -112,12 +102,12 @@
         // show start game button
       }
 
-      function setLocalStorage(key) {
-        return (val) => localStorage.setItem(key, val);
-      }
-
       function copyRoomLinkToClipboard() {
         navigator.clipboard.writeText(location.href);
+      }
+
+      if (state.dark_mode) {
+        document.documentElement.classList.add("dark");
       }
     </script>
     <link
@@ -179,12 +169,12 @@
       class="container row not-selectable"
       style="justify-content: space-between; width: 100%"
     >
-      <h3 style="margin-top: 20px; margin-bottom: 20px">♠ Upgrade</h3>
+      <h1 style="margin-top: 20px; margin-bottom: 20px">♠ Upgrade</h1>
 
       <button
+        class="card border"
+        style="margin-right: 0; font-size: x-large; margin: 0; padding: 0.5rem"
         popover-left="toggle dark mode"
-        class="btn-small"
-        style="margin-right: 0"
         x-text="dark_mode ? '🌜︎' : '☀'"
         x-on:click="toggle_dark_mode()"
       ></button>
