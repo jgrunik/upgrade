@@ -1,22 +1,19 @@
 {
-  "name": "upgrade",
-  "module": "src/index.tsx",
   "type": "module",
   "scripts": {
-    "serve": "bunx --bun serve docs/",
-    "build": "bun --watch build ./src/index.tsx --outdir ./docs --external '*'",
-    "dev": "bun dev.ts"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview",
+    "serve": "bunx --bun serve dist/client"
   },
   "devDependencies": {
-    "@types/node": "^20.9.4",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
-    "@types/web": "^0.0.119",
-    "bun-types": "^1.0.13",
-    "fs": "^0.0.1-security"
+    "typescript": "^5.3.2",
+    "vite": "^5.0.2",
+    "vite-plugin-solid": "^2.7.2"
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {}
+  "dependencies": {
+    "papercss": "^1.9.2",
+    "solid-js": "^1.8.6",
+    "vike": "^0.4.147"
+  }
 }
