@@ -3,7 +3,10 @@ import vike from "vike/plugin";
 import { UserConfig } from "vite";
 
 const config: UserConfig = {
-  plugins: [solid({ ssr: true }), vike({ prerender: true })],
+  plugins: [
+    solid({ ssr: true }),
+    vike({ prerender: true, baseServer: "/upgrade/" }),
+  ],
 };
 
 export default config;
