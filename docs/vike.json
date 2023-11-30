@@ -3,7 +3,7 @@
   "usesClientRouter": false,
   "manifestKeyMap": {},
   "baseServer": "/upgrade/",
-  "baseAssets": "/",
+  "baseAssets": "/upgrade/",
   "includeAssetsImportedByServer": true,
   "redirects": {},
   "trailingSlash": false,
