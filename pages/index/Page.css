@@ -1,0 +1,11 @@
+#page {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 1ch;
+  height: 100vh;
+  max-height: 100vh;
+  display: grid;
+  align-content: space-between;
+}

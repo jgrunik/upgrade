@@ -1,0 +1,35 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun environment
+        uses: oven-sh/setup-bun@v1
+        with:
+           bun-version: latest
+
+      - name: Run build
+        run: bun run build
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          persist-credentials: false
+
+      - name: Clear gh-pages
+        run: git rm -rf .
+
+      - name: Commit and push
+        uses: actions/commit@v4
+        with:
+          commit-message: "Update gh-pages"
+          branch: gh-pages
+          file: "dist/client"
