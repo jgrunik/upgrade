@@ -1,6 +1,3 @@
-import { children } from "solid-js";
-import { JSX } from "solid-js/jsx-runtime";
-
 export default function EnterRoomButton() {
   // #TODO: dynamically set if isHost (from query search params)
   const isHost = true;

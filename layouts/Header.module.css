@@ -5,7 +5,16 @@ header {
 }
 
 header > h1 {
+  font-size: min(10ch, 15vw);
   white-space: nowrap;
   margin-top: 0mm;
   margin-bottom: 0px;
+}
+
+header > h1 > svg {
+  font-size: 1.25ch;
+}
+
+header > button > svg {
+  font-size: 1rem;
 }

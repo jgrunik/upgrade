@@ -26,13 +26,13 @@ const onRenderHtml: OnRenderHtmlAsync = async (
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
-      <link rel="icon" href="${logoSVG}" />
+      <link rel="icon" type="image/svg+xml sizes="any" href="${logoSVG}" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="${description}" />
       <title>${title}</title>
       ${dangerouslySkipEscape(generateHydrationScript())}
     </head>
-    <body>
+    <body class=paper>
       ${pipe}
     </body>
   </html>`;

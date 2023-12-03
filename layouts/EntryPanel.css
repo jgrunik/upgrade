@@ -1,11 +1,11 @@
 main {
   display: grid;
-  grid-row-gap: 8ch;
+  row-gap: 5vh;
 }
 
 main > section {
   display: grid;
-  grid-row-gap: 2ch;
+  row-gap: 2vh;
 }
 
 #enter_room_button {
