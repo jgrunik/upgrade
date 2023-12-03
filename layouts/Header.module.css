@@ -1,0 +1,11 @@
+header {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+}
+
+header > h1 {
+  white-space: nowrap;
+  margin-top: 0mm;
+  margin-bottom: 0px;
+}

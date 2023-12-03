@@ -11,8 +11,8 @@ declare global {
       documentProps?: {
         title?: string;
         description?: string;
-        dark_mode?: boolean;
       };
+      colorScheme?: string;
     }
   }
 }

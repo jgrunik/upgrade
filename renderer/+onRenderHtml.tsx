@@ -1,11 +1,12 @@
 // https://vike.dev/onRenderHtml
 export { onRenderHtml };
 
+import type { OnRenderHtmlAsync } from "vike/types";
+
 import { generateHydrationScript, renderToStream } from "solid-js/web";
 import { dangerouslySkipEscape, escapeInject, stampPipe } from "vike/server";
-import type { OnRenderHtmlAsync } from "vike/types";
 import { PageLayout } from "./PageLayout";
-import logoUrl from "./logo.svg";
+import logoSVG from "../icons/logo.svg";
 
 const onRenderHtml: OnRenderHtmlAsync = async (
   pageContext
@@ -25,7 +26,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
-      <link rel="icon" href="${logoUrl}" />
+      <link rel="icon" href="${logoSVG}" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="${description}" />
       <title>${title}</title>

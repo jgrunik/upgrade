@@ -1,0 +1,18 @@
+main {
+  display: grid;
+  grid-row-gap: 8ch;
+}
+
+main > section {
+  display: grid;
+  grid-row-gap: 2ch;
+}
+
+#enter_room_button {
+  place-self: center;
+}
+
+#avatar_selector_button:focus,
+#nickname_name_input:focus {
+  border-style: dashed;
+}

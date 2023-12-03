@@ -13,7 +13,8 @@
     "gh-pages": "^6.1.0",
     "typescript": "^5.3.2",
     "vite": "^5.0.4",
-    "vite-plugin-solid": "^2.7.2"
+    "vite-plugin-solid": "^2.7.2",
+    "vite-plugin-solid-svg": "^0.7.0"
   },
   "dependencies": {
     "papercss": "^1.9.2",

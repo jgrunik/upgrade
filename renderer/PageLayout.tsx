@@ -1,12 +1,14 @@
 export { PageLayout };
 
-import "papercss";
 import type { Component, JSX } from "solid-js";
 import type { Store } from "solid-js/store";
-import { Dynamic } from "solid-js/web";
 import type { PageContext } from "vike/types";
-import "./PageLayout.css";
+
+import { Dynamic } from "solid-js/web";
 import { PageContextProvider, usePageContext } from "./usePageContext";
+
+import "papercss";
+import "./PageLayout.css";
 
 interface Props {
   pageContext: Store<PageContext>;

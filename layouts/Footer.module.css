@@ -1,5 +1,7 @@
 footer {
   text-align: right;
+  padding-bottom: 1ch;
+  padding-right: 1ch;
 }
 
 footer > p {
@@ -10,7 +12,7 @@ footer > p {
 
 footer > p > span > img {
   border: none;
-  margin-left: 3px;
+  margin-left: 0.5ch;
   vertical-align: text-bottom;
 }
 

@@ -1,24 +1,15 @@
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-
-import { Counter } from "./Counter";
+import EntryPanel from "../../layouts/EntryPanel";
+import Footer from "../../layouts/Footer";
+import Header from "../../layouts/Header";
 
 import "./Page.css";
-import EntryPanel from "../../fragments/EntryPanel";
 
 export default () => (
   <div id="page" class="paper">
     <Header />
-    <Main />
+    <main>
+      <EntryPanel />
+    </main>
     <Footer />
   </div>
 );
-
-function Main() {
-  return (
-    <>
-      <EntryPanel />
-      <Counter />
-    </>
-  );
-}
