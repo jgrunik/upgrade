@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "papercss": "^1.9.2",
+    "peerjs": "^1.5.1",
     "solid-js": "^1.8.6",
     "vike": "^0.4.147"
   }
