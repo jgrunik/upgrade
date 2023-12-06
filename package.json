@@ -6,7 +6,7 @@
     "clean": "rm -rf dist/",
     "preview": "vite build && vite preview",
     "serve": "bunx --bun serve dist/client",
-    "deploy": "bunx gh-pages --dist dist/client --branch gh-pages --dest docs --nojekyll"
+    "deploy": "bun run clean; bun run build; bunx gh-pages --dist dist/client --branch gh-pages --dest docs --nojekyll"
   },
   "devDependencies": {
     "@types/node": "^20.10.1",
