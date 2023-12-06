@@ -1,6 +1,15 @@
-import { Show, createMemo, createSignal, onMount } from "solid-js";
+import {
+  Accessor,
+  Show,
+  VoidProps,
+  createMemo,
+  createSignal,
+  onMount,
+} from "solid-js";
 
-export default function AvatarSelector() {
+export default function AvatarSelector(props: {
+  isDisabled?: Accessor<boolean>;
+}) {
   const [avatarSeed, setAvatarSeed] = createSignal();
   const avatarSrc = createMemo(
     () => `https://api.dicebear.com/7.x/lorelei/svg?seed=${avatarSeed()}`
@@ -30,6 +39,7 @@ export default function AvatarSelector() {
         height: "auto",
       }}
       onClick={onClick}
+      disabled={props.isDisabled ? props.isDisabled() : false}
     >
       <Show when={avatarSeed()}>
         <img

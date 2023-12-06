@@ -1,6 +1,8 @@
-import { createSignal, onMount } from "solid-js";
+import { Accessor, createSignal, onMount } from "solid-js";
 
-export default function NicknameInput() {
+export default function NicknameInput(props: {
+  isDisabled?: Accessor<boolean>;
+}) {
   const [nickname, setNickname] = createSignal("");
 
   onMount(() => {
@@ -21,6 +23,7 @@ export default function NicknameInput() {
       }}
       value={nickname()}
       onInput={(event) => localStorage.setItem("nickname", event.target.value)}
+      disabled={props.isDisabled ? props.isDisabled() : false}
     />
   );
 }
