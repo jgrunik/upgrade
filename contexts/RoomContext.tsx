@@ -10,7 +10,6 @@ import {
 } from "solid-js";
 
 import { createStore } from "solid-js/store";
-import { usePeer } from "./PeerContext";
 import type Peer from "peerjs";
 
 type Room = {
@@ -24,16 +23,16 @@ const [room, setRoom] = createStore<Room>();
 const RoomContext = createContext({ room, setRoom } as const);
 
 function RoomProvider(props: { children: JSXElement }) {
-  const peer = usePeer();
-
   onMount(async () => {
     let room: Room = {};
     const params = new URLSearchParams(document.location.search);
     const params_roomId = params.get("room");
     room.isHost = params_roomId === null;
     room.id = params_roomId ?? window.crypto.randomUUID();
-    const Peer = (await import("peerjs")).default;
-    if (room.isHost) room.peer = new Peer(room.id);
+    if (room.isHost) {
+      const Peer = (await import("peerjs")).default;
+      room.peer = new Peer(room.id);
+    }
     setRoom(room);
   });
 
