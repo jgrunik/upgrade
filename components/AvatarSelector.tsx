@@ -1,7 +1,7 @@
 import { JSX, Show, createMemo, on, onCleanup, onMount } from "solid-js";
-import { usePlayer } from "../contexts/PlayerContext";
+import { useLocalPlayer } from "../contexts/LocalPlayerContext";
 
-const { player, setPlayer } = usePlayer();
+const { localPlayer: player, setLocalPlayer: setPlayer } = useLocalPlayer();
 
 export default function AvatarSelector(
   props: JSX.ButtonHTMLAttributes<HTMLButtonElement>

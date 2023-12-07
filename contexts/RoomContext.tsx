@@ -1,28 +1,47 @@
 import { DataConnection, type Peer } from "peerjs";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
+import { type Player } from "./LocalPlayerContext";
 import { usePeer } from "./PeerContext";
-import { type Player } from "./PlayerContext";
 import { createContextProvider } from "./utils/createContextProvider";
 
 import { startRoom } from "./utils/networking";
-export { Provider as RoomProvider, use as useRoom, startRoom };
+export {
+  Room,
+  RoomPlayer,
+  Provider as RoomProvider,
+  startRoom,
+  use as useRoom,
+};
+
+type RoomPlayer = Player & { connection: DataConnection };
 
 type Room = {
   id?: string;
   peer?: Peer;
   isHost?: boolean;
   connection?: DataConnection; // connection player has with this room
-  players?: (Player & { connection?: DataConnection })[];
+  players: RoomPlayer[];
 };
 
 const PeerType = usePeer();
 
-const [room, setRoom] = createStore<Room>();
+const [room, setRoom] = createStore<Room>({ players: [] });
 
 const { Provider, use } = createContextProvider({ room, setRoom } as const, {
   onInit() {
     // console.log("[Room Context] Initialising");
+
+    createEffect(
+      on(
+        [() => room.players],
+        () => {
+          console.log("Players changed");
+          console.table(room.players);
+        },
+        { defer: true }
+      )
+    );
 
     createEffect(
       on(

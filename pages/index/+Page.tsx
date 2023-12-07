@@ -2,7 +2,7 @@ import { createEffect, on } from "solid-js";
 import Compose from "../../components/Compose";
 import { GameProvider } from "../../contexts/GameContext";
 import { PeerProvider } from "../../contexts/PeerContext";
-import { PlayerProvider } from "../../contexts/PlayerContext";
+import { LocalPlayerProvider } from "../../contexts/LocalPlayerContext";
 import { RoomProvider, startRoom } from "../../contexts/RoomContext";
 import { UIProvider } from "../../contexts/UIContext";
 import Footer from "../../layouts/Footer";
@@ -12,11 +12,11 @@ import createEntryLayout from "../../layouts/createEntryLayout";
 import "./Page.css";
 
 const contexts = [
+  UIProvider,
   GameProvider,
   RoomProvider,
+  LocalPlayerProvider,
   PeerProvider,
-  PlayerProvider,
-  UIProvider,
 ];
 
 export default function LandingPage() {

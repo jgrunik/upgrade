@@ -1,25 +1,32 @@
+export {
+  LocalPlayer,
+  Provider as LocalPlayerProvider,
+  Player,
+  use as useLocalPlayer,
+};
+
 import type Peer from "peerjs";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { usePeer } from "./PeerContext";
 import { useRoom } from "./RoomContext";
 import { createContextProvider } from "./utils/createContextProvider";
-export { Player, Provider as PlayerProvider, use as usePlayer };
 
 type Player = {
   id?: string;
   nickname?: string;
   avatarSeed?: string;
-  peer?: Peer;
 };
 
-const [player, setPlayer] = createStore<Player>();
+type LocalPlayer = Player & { peer?: Peer };
+
+const [localPlayer, setLocalPlayer] = createStore<LocalPlayer>();
 
 const PeerType = usePeer();
 const { room, setRoom } = useRoom();
 
 const { Provider, use } = createContextProvider(
-  { player, setPlayer },
+  { localPlayer, setLocalPlayer },
   {
     onInit() {
       // console.log("[Player Context] Initialising");
@@ -28,11 +35,15 @@ const { Provider, use } = createContextProvider(
       // - not granular but neat
       createEffect(
         on(
-          [() => player.id, () => player.nickname, () => player.avatarSeed],
+          [
+            () => localPlayer.id,
+            () => localPlayer.nickname,
+            () => localPlayer.avatarSeed,
+          ],
           () => {
-            localStorage.setItem("playerId", player.id!);
-            localStorage.setItem("nickname", player.nickname!);
-            localStorage.setItem("avatarSeed", player.avatarSeed!);
+            localStorage.setItem("playerId", localPlayer.id!);
+            localStorage.setItem("nickname", localPlayer.nickname!);
+            localStorage.setItem("avatarSeed", localPlayer.avatarSeed!);
           },
           { defer: true }
         )
@@ -41,13 +52,14 @@ const { Provider, use } = createContextProvider(
       // set player.peer on player.id and PeerType
       createEffect(
         on(
-          [() => player.id, PeerType, () => player.id],
+          [() => localPlayer.id, PeerType, () => localPlayer.id],
           () => {
             const peer =
-              player.id === undefined || PeerType() === undefined
+              localPlayer.id === undefined || PeerType() === undefined
                 ? undefined
-                : new (PeerType()!)(player.id!);
-            setPlayer({ peer });
+                : new (PeerType()!)(localPlayer.id!);
+
+            setLocalPlayer({ peer });
           },
           { defer: true }
         )
@@ -57,7 +69,7 @@ const { Provider, use } = createContextProvider(
     onMount() {
       // console.log("[Player Context] Mounted");
 
-      setPlayer({
+      setLocalPlayer({
         id: localStorage.getItem("playerId") ?? window.crypto.randomUUID(),
         nickname: localStorage.getItem("nickname") ?? "",
         avatarSeed:

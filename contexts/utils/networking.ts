@@ -1,10 +1,16 @@
 export { startRoom };
 
-import { usePlayer } from "../PlayerContext";
-import { useRoom } from "../RoomContext";
+import { useLocalPlayer } from "../LocalPlayerContext";
+import { RoomPlayer, useRoom } from "../RoomContext";
+
+enum DataEvent {
+  PLAYER_INITIALISE = "Player::Initialise",
+}
+
+type PeerData = { type: DataEvent; payload?: any };
 
 function startRoom() {
-  const { room } = useRoom();
+  const { room, setRoom } = useRoom();
 
   if (!room.isHost) {
     startPlayer();
@@ -23,6 +29,13 @@ function startRoom() {
 
       .on("open", () => {
         console.log(`[Room] player connected: ${playerId}`);
+
+        // add player to list
+        const roomPlayer: RoomPlayer = {
+          id: playerId,
+          connection: playerConnection,
+        };
+        setRoom("players", (players) => [...players, roomPlayer]);
       })
 
       .on("close", () => {
@@ -36,13 +49,30 @@ function startRoom() {
 
       .on("data", (data) => {
         console.log(`[Room] data from player: ${playerId}`);
-        console.log(data);
+        console.table(data);
+
+        const { type, payload } = data as PeerData;
+        if (type === undefined) {
+          console.warn(`[Room] malformed data from player: ${playerId}`);
+          return;
+        }
+
+        if (type == DataEvent.PLAYER_INITIALISE) {
+          const { nickname, avatarSeed } = payload;
+
+          setRoom("players", (players) =>
+            players.map((player) => {
+              if (player.id !== playerId) return player;
+              return { ...player, nickname, avatarSeed };
+            })
+          );
+        }
       });
   });
 }
 
 function startPlayer() {
-  const { player } = usePlayer();
+  const { localPlayer: player } = useLocalPlayer();
   const { room, setRoom } = useRoom();
 
   const roomConnection = player.peer!.connect(room.id!);
@@ -57,13 +87,16 @@ function startPlayer() {
 
     .on("open", () => {
       console.log(`[Player] room connected: ${roomId}`);
-      roomConnection.send({
-        event: "FIRST_MESSAGE",
-        data: {
+
+      const data: PeerData = {
+        type: DataEvent.PLAYER_INITIALISE,
+        payload: {
           nickname: player.nickname!,
           avatarSeed: player.avatarSeed!,
         },
-      });
+      };
+
+      roomConnection.send(data);
     })
 
     .on("close", () => {
