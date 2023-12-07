@@ -1,5 +1,5 @@
 import AvatarSelector from "../components/AvatarSelector";
-import createEnterRoomButton from "../components/createEnterRoomButton";
+import createEnterRoomButton from "../components/EnterRoomButton";
 import NicknameInput from "../components/NicknameInput";
 
 import "./EntryLayout.css";
@@ -10,8 +10,8 @@ export default function createEntryLayout() {
     EntryLayout: () => (
       <>
         <section>
-          <AvatarSelector isDisabled={isEnteringRoom} />
-          <NicknameInput isDisabled={isEnteringRoom} />
+          <AvatarSelector disabled={isEnteringRoom()} />
+          <NicknameInput disabled={isEnteringRoom()} />
         </section>
         <EnterRoomButton />
       </>

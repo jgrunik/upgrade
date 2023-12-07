@@ -1,35 +1,23 @@
-import {
-  Accessor,
-  Show,
-  VoidProps,
-  createMemo,
-  createSignal,
-  onMount,
-} from "solid-js";
+import { JSX, Show, createMemo, on, onCleanup, onMount } from "solid-js";
+import { usePlayer } from "../contexts/PlayerContext";
 
-export default function AvatarSelector(props: {
-  isDisabled?: Accessor<boolean>;
-}) {
-  const [avatarSeed, setAvatarSeed] = createSignal();
+const { player, setPlayer } = usePlayer();
+
+export default function AvatarSelector(
+  props: JSX.ButtonHTMLAttributes<HTMLButtonElement>
+) {
   const avatarSrc = createMemo(
-    () => `https://api.dicebear.com/7.x/lorelei/svg?seed=${avatarSeed()}`
+    on(
+      () => player.avatarSeed,
+      () =>
+        `https://api.dicebear.com/7.x/lorelei/svg?seed=${player.avatarSeed!}`,
+      { defer: true }
+    )
   );
-
-  function createAvatar(seed: string = window.crypto.randomUUID()) {
-    localStorage.setItem("avatarSeed", seed);
-    setAvatarSeed(seed);
-  }
-
-  onMount(() => {
-    createAvatar(localStorage.getItem("avatarSeed") ?? undefined);
-  });
-
-  function onClick() {
-    createAvatar();
-  }
 
   return (
     <button
+      {...props}
       id="avatar_selector_button"
       class="container border-3 border-dashed shadow shadow-small"
       style={{
@@ -38,10 +26,9 @@ export default function AvatarSelector(props: {
         "aspect-ratio": 1,
         height: "auto",
       }}
-      onClick={onClick}
-      disabled={props.isDisabled ? props.isDisabled() : false}
+      onClick={randomiseAvatar}
     >
-      <Show when={avatarSeed()}>
+      <Show when={avatarSrc()}>
         <img
           alt="avatar"
           draggable="false"
@@ -54,4 +41,8 @@ export default function AvatarSelector(props: {
       </Show>
     </button>
   );
+}
+
+function randomiseAvatar() {
+  setPlayer("avatarSeed", window.crypto.randomUUID());
 }

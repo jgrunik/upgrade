@@ -1,8 +1,8 @@
-import { Accessor, createSignal, onMount } from "solid-js";
+import { JSX, createSignal, onMount } from "solid-js";
 
-export default function NicknameInput(props: {
-  isDisabled?: Accessor<boolean>;
-}) {
+export default function NicknameInput(
+  props: JSX.InputHTMLAttributes<HTMLInputElement>
+) {
   const [nickname, setNickname] = createSignal("");
 
   onMount(() => {
@@ -11,6 +11,7 @@ export default function NicknameInput(props: {
 
   return (
     <input
+      {...props}
       id="nickname_name_input"
       type="text"
       placeholder="nickname goes here ♥"
@@ -23,7 +24,6 @@ export default function NicknameInput(props: {
       }}
       value={nickname()}
       onInput={(event) => localStorage.setItem("nickname", event.target.value)}
-      disabled={props.isDisabled ? props.isDisabled() : false}
     />
   );
 }

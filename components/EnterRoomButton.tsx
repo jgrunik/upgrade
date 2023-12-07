@@ -1,5 +1,7 @@
-import { createMemo, createSignal } from "solid-js";
+import { JSX, createMemo, createSignal } from "solid-js";
 import { useRoom } from "../contexts/RoomContext";
+
+export { createEnterRoomButton };
 
 export default function createEnterRoomButton() {
   const [isEnteringRoom, setIsEnteringRoom] = createSignal(false);
@@ -10,7 +12,7 @@ export default function createEnterRoomButton() {
     () => `⚔ ${room?.isHost ? "Host" : "Join"} Room`
   );
 
-  function EnterRoomButton() {
+  function EnterRoomButton(props: JSX.ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
       <button
         id="enter_room_button"

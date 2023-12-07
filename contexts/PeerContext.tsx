@@ -1,38 +1,24 @@
-export { PeerProvider, usePeer };
+export { Provider as PeerProvider, use as usePeer };
 
-import type Peer from "peerjs";
-import {
-  JSXElement,
-  createContext,
-  createSignal,
-  onMount,
-  useContext,
-} from "solid-js";
+import Peer from "peerjs";
+import { createSignal } from "solid-js";
+import { createContextProvider } from "./utils/createContextProvider";
 
-const [peer, setPeer] = createSignal<Peer>();
+const [PeerType, setPeerType] = createSignal<typeof Peer>();
 
-const PeerContext = createContext(peer);
+const { Provider, use } = createContextProvider(PeerType, {
+  onInit() {
+    // console.log("[Peer Context] Initialising");
+  },
 
-function PeerProvider(props: { children: JSXElement }) {
-  onMount(async () => {
-    let peerId = localStorage.getItem("peerId");
-    if (!peerId) {
-      peerId = window.crypto.randomUUID();
-      localStorage.setItem("peerId", peerId);
-    }
-    const _Peer = (await import("peerjs")).default;
-    setPeer(new _Peer(peerId));
-  });
+  async onMount() {
+    // console.log("[Peer Context] Mounted");
 
-  return (
-    <PeerContext.Provider value={peer}>{props.children}</PeerContext.Provider>
-  );
-}
+    const Peer = (await import("peerjs")).default;
+    setPeerType(() => Peer);
+  },
 
-function usePeer() {
-  const value = useContext(PeerContext);
-  if (value === undefined) {
-    throw new Error("usePeer must be used within a PeerContext.Provider");
-  }
-  return value;
-}
+  onCleanUp() {
+    // console.log("[Peer Context] Cleaning");
+  },
+});
