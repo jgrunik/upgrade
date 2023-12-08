@@ -6,14 +6,10 @@ const { localPlayer: player, setLocalPlayer: setPlayer } = useLocalPlayer();
 export default function AvatarSelector(
   props: JSX.ButtonHTMLAttributes<HTMLButtonElement>
 ) {
-  const avatarSrc = createMemo(
-    on(
-      () => player.avatarSeed,
-      () =>
-        `https://api.dicebear.com/7.x/lorelei/svg?seed=${player.avatarSeed!}`,
-      { defer: true }
-    )
-  );
+  const avatarSrc = createMemo(() => {
+    if (!player?.avatarSeed) return;
+    return `https://api.dicebear.com/7.x/lorelei/svg?seed=${player.avatarSeed!}`;
+  });
 
   return (
     <button
