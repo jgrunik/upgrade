@@ -11,11 +11,7 @@ import lightIcon from "../icons/sun.svg?component-solid";
 const IconList: Record<
   ColorSchemeOption,
   Component<JSX.SvgSVGAttributes<SVGSVGElement>>
-> = {
-  system: systemIcon,
-  dark: darkIcon,
-  light: lightIcon,
-};
+> = { system: systemIcon, dark: darkIcon, light: lightIcon } as const;
 
 export default function DarkModeButton() {
   const { UI } = useUI();

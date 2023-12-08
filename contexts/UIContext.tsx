@@ -43,11 +43,11 @@ const { Provider, use } = createContextProvider(
         )
       );
 
-      // set isDark based on setting
       createEffect(
         on(
           () => UI.colorScheme.setting,
           () => {
+            // set isDark based on setting
             setUI(
               "colorScheme",
               "isDark",
@@ -55,8 +55,11 @@ const { Provider, use } = createContextProvider(
                 ? UI.colorScheme.setting === "dark"
                 : isSystemDark() ?? UI.colorScheme.isDark
             );
+
+            // persist in localStorage
+            localStorage.setItem("colorSchemeSetting", UI.colorScheme.setting);
           },
-          { defer: false }
+          { defer: true }
         )
       );
     },
@@ -65,7 +68,7 @@ const { Provider, use } = createContextProvider(
       // console.log("[UI Context] Mounted");
 
       const colorSchemeSetting =
-        (localStorage.getItem("colorScheme") as ColorSchemeOption) ??
+        (localStorage.getItem("colorSchemeSetting") as ColorSchemeOption) ??
         UI.colorScheme.setting;
 
       setUI("colorScheme", "setting", colorSchemeSetting);
