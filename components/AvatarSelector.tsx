@@ -1,14 +1,14 @@
-import { JSX, Show, createMemo, on, onCleanup, onMount } from "solid-js";
+import { JSX, Show, createMemo } from "solid-js";
 import { useLocalPlayer } from "../contexts/LocalPlayerContext";
 
-const { localPlayer: player, setLocalPlayer: setPlayer } = useLocalPlayer();
+const { localPlayer, setLocalPlayer } = useLocalPlayer();
 
 export default function AvatarSelector(
   props: JSX.ButtonHTMLAttributes<HTMLButtonElement>
 ) {
   const avatarSrc = createMemo(() => {
-    if (!player?.avatarSeed) return;
-    return `https://api.dicebear.com/7.x/lorelei/svg?seed=${player.avatarSeed!}`;
+    if (!localPlayer?.avatarSeed) return;
+    return `https://api.dicebear.com/7.x/lorelei/svg?seed=${localPlayer.avatarSeed!}`;
   });
 
   return (
@@ -40,5 +40,5 @@ export default function AvatarSelector(
 }
 
 function randomiseAvatar() {
-  setPlayer("avatarSeed", window.crypto.randomUUID());
+  setLocalPlayer("avatarSeed", window.crypto.randomUUID());
 }

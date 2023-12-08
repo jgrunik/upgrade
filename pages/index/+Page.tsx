@@ -1,13 +1,16 @@
 import { createEffect, on } from "solid-js";
-import Compose from "../../components/Compose";
+import Compose from "../../components/utils/Compose";
 import { GameProvider } from "../../contexts/GameContext";
 import { PeerProvider } from "../../contexts/PeerContext";
-import { LocalPlayerProvider } from "../../contexts/LocalPlayerContext";
+import {
+  LocalPlayerProvider,
+  useLocalPlayer,
+} from "../../contexts/LocalPlayerContext";
 import { RoomProvider, startRoom } from "../../contexts/RoomContext";
 import { UIProvider } from "../../contexts/UIContext";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
-import createEntryLayout from "../../layouts/createEntryLayout";
+import EntryLayout from "../../layouts/EntryLayout";
 
 import "./Page.css";
 
@@ -20,10 +23,6 @@ const contexts = [
 ];
 
 export default function LandingPage() {
-  const { EntryLayout, isEnteringRoom } = createEntryLayout();
-
-  createEffect(on(isEnteringRoom, startRoom, { defer: true }));
-
   return (
     <Compose components={contexts}>
       <Header />

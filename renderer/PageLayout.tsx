@@ -1,6 +1,6 @@
 export { PageLayout };
 
-import type { Component, JSX } from "solid-js";
+import type { Component } from "solid-js";
 import type { Store } from "solid-js/store";
 import type { PageContext } from "vike/types";
 
@@ -12,10 +12,6 @@ import "./PageLayout.css";
 
 interface Props {
   pageContext: Store<PageContext>;
-}
-
-interface Children {
-  children: JSX.Element;
 }
 
 const PageLayout: Component<Props> = (props) => {

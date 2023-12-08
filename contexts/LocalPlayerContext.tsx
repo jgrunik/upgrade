@@ -9,8 +9,9 @@ import type Peer from "peerjs";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { usePeer } from "./PeerContext";
-import { useRoom } from "./RoomContext";
+import { Room } from "./RoomContext";
 import { createContextProvider } from "./utils/createContextProvider";
+import createPersistance from "./utils/createPersistance";
 
 type Player = {
   id?: string;
@@ -18,12 +19,14 @@ type Player = {
   avatarSeed?: string;
 };
 
-type LocalPlayer = Player & { peer?: Peer };
+type LocalPlayer = Player & {
+  peer?: Peer;
+  room?: Room;
+};
 
 const [localPlayer, setLocalPlayer] = createStore<LocalPlayer>();
 
 const PeerType = usePeer();
-const { room, setRoom } = useRoom();
 
 const { Provider, use } = createContextProvider(
   { localPlayer, setLocalPlayer },
@@ -31,35 +34,20 @@ const { Provider, use } = createContextProvider(
     onInit() {
       // console.log("[Player Context] Initialising");
 
-      // if any of these are changed, save all of them
-      // - not granular but neat
-      createEffect(
-        on(
-          [
-            () => localPlayer.id,
-            () => localPlayer.nickname,
-            () => localPlayer.avatarSeed,
-          ],
-          () => {
-            localStorage.setItem("playerId", localPlayer.id!);
-            localStorage.setItem("nickname", localPlayer.nickname!);
-            localStorage.setItem("avatarSeed", localPlayer.avatarSeed!);
-          },
-          { defer: true }
-        )
+      createPersistance(
+        ["playerId", () => localPlayer.id],
+        ["nickname", () => localPlayer.nickname],
+        ["avatarSeed", () => localPlayer.avatarSeed]
       );
 
-      // set player.peer on player.id and PeerType
+      // set player.peer when player.id both PeerType are set
       createEffect(
         on(
-          [() => localPlayer.id, PeerType, () => localPlayer.id],
+          [() => localPlayer.id, PeerType],
           () => {
-            const peer =
-              localPlayer.id === undefined || PeerType() === undefined
-                ? undefined
-                : new (PeerType()!)(localPlayer.id!);
-
-            setLocalPlayer({ peer });
+            if (localPlayer.id === undefined) return;
+            if (PeerType() === undefined) return;
+            setLocalPlayer("peer", new (PeerType()!)(localPlayer.id!));
           },
           { defer: true }
         )

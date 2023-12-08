@@ -13,7 +13,7 @@ const IconList: Record<
   Component<JSX.SvgSVGAttributes<SVGSVGElement>>
 > = { system: systemIcon, dark: darkIcon, light: lightIcon } as const;
 
-export default function DarkModeButton() {
+export default function ColorSchemeButton() {
   const { UI } = useUI();
 
   const icon = createMemo(() => IconList[UI.colorScheme.setting]);

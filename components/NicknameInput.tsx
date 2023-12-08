@@ -1,13 +1,10 @@
-import { JSX, createSignal, onMount } from "solid-js";
+import { JSX } from "solid-js";
+import { useLocalPlayer } from "../contexts/LocalPlayerContext";
 
 export default function NicknameInput(
   props: JSX.InputHTMLAttributes<HTMLInputElement>
 ) {
-  const [nickname, setNickname] = createSignal("");
-
-  onMount(() => {
-    setNickname(localStorage.getItem("nickname") ?? "");
-  });
+  const { localPlayer, setLocalPlayer } = useLocalPlayer();
 
   return (
     <input
@@ -22,8 +19,8 @@ export default function NicknameInput(
         "font-size": "x-large",
         "max-width": "28ch",
       }}
-      value={nickname()}
-      onInput={(event) => localStorage.setItem("nickname", event.target.value)}
+      value={localPlayer?.nickname}
+      onInput={(event) => setLocalPlayer("nickname", event.target.value)}
     />
   );
 }

@@ -1,11 +1,4 @@
 body {
-  margin: 0 !important;
-  border: 0 !important;
-  box-shadow: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  height: 100vh !important;
-  max-height: 100% !important;
-  display: grid !important;
-  align-content: space-between !important;
+  display: grid;
+  align-content: space-between;
 }

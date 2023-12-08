@@ -9,6 +9,7 @@ export {
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { createContextProvider } from "./utils/createContextProvider";
+import createPersistance from "./utils/createPersistance";
 
 const colorSchemes_matchMedia = ["light", "dark"] as const;
 const colorSchemes = colorSchemes_matchMedia;
@@ -30,6 +31,8 @@ const { Provider, use } = createContextProvider(
     onInit() {
       // console.log("[UI Context] Initialising");
 
+      createPersistance(["colorSchemeSetting", () => UI.colorScheme.setting]);
+
       // apply dark mode class on the html element
       createEffect(
         on(
@@ -43,25 +46,16 @@ const { Provider, use } = createContextProvider(
         )
       );
 
-      createEffect(
-        on(
-          () => UI.colorScheme.setting,
-          () => {
-            // set isDark based on setting
-            setUI(
-              "colorScheme",
-              "isDark",
-              UI.colorScheme.setting !== "system"
-                ? UI.colorScheme.setting === "dark"
-                : isSystemDark() ?? UI.colorScheme.isDark
-            );
-
-            // persist in localStorage
-            localStorage.setItem("colorSchemeSetting", UI.colorScheme.setting);
-          },
-          { defer: true }
-        )
-      );
+      // set isDark based on setting
+      createEffect(() => {
+        setUI(
+          "colorScheme",
+          "isDark",
+          UI.colorScheme.setting !== "system"
+            ? UI.colorScheme.setting === "dark"
+            : isSystemDark() ?? UI.colorScheme.isDark
+        );
+      });
     },
 
     onMount() {
@@ -75,10 +69,9 @@ const { Provider, use } = createContextProvider(
 
       window
         .matchMedia("(prefers-color-scheme: dark)")
-        .addEventListener("change", () => {
+        .addEventListener("change", ({ matches: isDark }) => {
           if (UI.colorScheme.setting !== "system") return;
-          // trigger isDark to refresh
-          setUI("colorScheme", "setting", "system");
+          setUI("colorScheme", { isDark });
         });
     },
 

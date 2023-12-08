@@ -1,35 +1,29 @@
-import { JSX, createMemo, createSignal } from "solid-js";
+import { JSX, createMemo } from "solid-js";
+import { useLocalPlayer } from "../contexts/LocalPlayerContext";
 import { useRoom } from "../contexts/RoomContext";
 
-export { createEnterRoomButton };
+const { room, setRoom } = useRoom();
+const { localPlayer, setLocalPlayer } = useLocalPlayer();
 
-export default function createEnterRoomButton() {
-  const [isEnteringRoom, setIsEnteringRoom] = createSignal(false);
-
-  const { room } = useRoom();
-
+export default function EnterRoomButton(
+  props: JSX.ButtonHTMLAttributes<HTMLButtonElement>
+) {
   const innerText = createMemo(
     () => `⚔ ${room?.isHost ? "Host" : "Join"} Room`
   );
 
-  function EnterRoomButton(props: JSX.ButtonHTMLAttributes<HTMLButtonElement>) {
-    return (
-      <button
-        id="enter_room_button"
-        class="btn-secondary-outline"
-        style="max-width: fit-content; font-size: xx-large; font-variant: small-caps"
-        disabled={isEnteringRoom()}
-        innerText={innerText()}
-        onClick={() => {
-          if (isEnteringRoom()) return;
-          if (room.isHost) {
-            history.pushState(null, "", `?room=${room.id}`);
-          }
-          setIsEnteringRoom(true);
-        }}
-      ></button>
-    );
-  }
-
-  return { EnterRoomButton, isEnteringRoom };
+  return (
+    <button
+      {...props}
+      id="enter_room_button"
+      class="btn-secondary-outline"
+      style="max-width: fit-content; font-size: xx-large; font-variant: small-caps"
+      innerText={innerText()}
+      onClick={() => {
+        // bind player and room together
+        setLocalPlayer({ room });
+        setRoom({ localPlayer });
+      }}
+    ></button>
+  );
 }

@@ -9,6 +9,14 @@ body::-webkit-scrollbar {
 body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100vh !important;
+  max-height: 100% !important;
 }
 
 button,
