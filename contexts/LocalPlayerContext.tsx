@@ -9,7 +9,6 @@ import type Peer from "peerjs";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { usePeer } from "./PeerContext";
-import { Room } from "./RoomContext";
 import { createContextProvider } from "./utils/createContextProvider";
 import createPersistance from "./utils/createPersistance";
 
@@ -20,8 +19,8 @@ type Player = {
 };
 
 type LocalPlayer = Player & {
+  isHost?: boolean;
   peer?: Peer;
-  room?: Room;
 };
 
 const [localPlayer, setLocalPlayer] = createStore<LocalPlayer>();

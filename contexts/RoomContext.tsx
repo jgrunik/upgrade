@@ -5,14 +5,8 @@ import { LocalPlayer, type Player } from "./LocalPlayerContext";
 import { usePeer } from "./PeerContext";
 import { createContextProvider } from "./utils/createContextProvider";
 
-import { startRoom } from "./utils/networking";
-export {
-  Room,
-  RoomPlayer,
-  Provider as RoomProvider,
-  startRoom,
-  use as useRoom,
-};
+import createNetworking from "./utils/createNetworking";
+export { Room, RoomPlayer, Provider as RoomProvider, use as useRoom };
 
 type RoomPlayer = Player & { connection?: DataConnection };
 
@@ -33,13 +27,12 @@ const { Provider, use } = createContextProvider({ room, setRoom } as const, {
   onInit() {
     // console.log("[Room Context] Initialising");
 
-    // when players join / leave the room
+    // when players array changes
     createEffect(
       on(
         () => room.players,
         () => {
-          console.log("Players changed");
-          console.table(room.players);
+          // console.table([...room.players]);
         },
         { defer: true }
       )
@@ -72,7 +65,8 @@ const { Provider, use } = createContextProvider({ room, setRoom } as const, {
       )
     );
 
-    createEffect(on(() => room.localPlayer, startRoom, { defer: true }));
+    //
+    createEffect(on(() => room.localPlayer, createNetworking, { defer: true }));
   },
 
   onMount() {
