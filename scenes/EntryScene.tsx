@@ -1,17 +1,15 @@
-import { createMemo, createSignal, on } from "solid-js";
+import { createComputed, createSignal, on } from "solid-js";
 import AvatarSelector from "../components/AvatarSelector";
 import EnterRoomButton from "../components/EnterRoomButton";
 import NicknameInput from "../components/NicknameInput";
 import { useLocalPlayer } from "../contexts/LocalPlayerContext";
-import { useRoom } from "../contexts/RoomContext";
+import { useNetwork } from "../contexts/NetworkContext";
 import { useUI } from "../contexts/UIContext";
 import "./EntryScene.css";
-import { useNetwork } from "../contexts/NetworkContext";
 
 type EntryAttempt = "Unattempted" | "Pending" | "Successful" | "Failed";
 
 const { localPlayer } = useLocalPlayer();
-const { room } = useRoom();
 const { network } = useNetwork();
 
 export default function EntryScene() {
@@ -20,18 +18,18 @@ export default function EntryScene() {
   const [entryAttempt, setEntryAttempt] =
     createSignal<EntryAttempt>("Unattempted");
 
-  createMemo(
+  createComputed(
     on(
-      () => room.connection,
+      () => network.isConnected,
       () => {
-        console.log("ROOM CONNECTION!");
+        if (!network.isConnected) return;
         setUI("scene", { name: "Lobby" });
       },
       { defer: true }
     )
   );
 
-  function attemptEntry() {
+  function tryEnter() {
     setEntryAttempt("Pending");
     network.connect();
   }
@@ -44,7 +42,7 @@ export default function EntryScene() {
       </section>
       <EnterRoomButton
         disabled={!localPlayer?.nickname || entryAttempt() == "Pending"}
-        onclick={attemptEntry}
+        onclick={tryEnter}
       />
     </>
   );

@@ -6,7 +6,7 @@ export {
   use as useUI,
 };
 
-import { Accessor, createEffect, on } from "solid-js";
+import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import EntryScene from "../scenes/EntryScene";
 import GameScene from "../scenes/GameScene";

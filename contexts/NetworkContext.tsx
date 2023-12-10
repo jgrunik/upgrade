@@ -1,19 +1,19 @@
 export { Provider as NetworkProvider, use as useNetwork };
 
 import Peer, { DataConnection } from "peerjs";
-import { createEffect, on } from "solid-js";
+import { createComputed, on } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
 import { Player, useLocalPlayer } from "./LocalPlayerContext";
 import { Room, useRoom } from "./RoomContext";
 import DataEventHandlers, { DataEventType } from "./utils/DataEventHandlers";
 import { createContextProvider } from "./utils/createContextProvider";
 
-type HostedPlayer = Player & {
+export type HostedPlayer = Player & {
   /** The connection to remote player */
   connection?: DataConnection;
 };
 
-type HostRoom = Room & {
+export type HostRoom = Room & {
   /** The local player is hosting the room */
   isHost: true;
   /** The hosting room's network object */
@@ -57,13 +57,13 @@ const { Provider, use } = createContextProvider(
 
       // when room peer is set
       // > initialise host room's networking
-      createEffect(
+      createComputed(
         on(() => (room as HostRoom).peer, setupHostRoom, { defer: true })
       );
 
       // when player peer & host room are set
       // > initialise local player's networking
-      createEffect(
+      createComputed(
         on(
           [() => localPlayer.peer, () => room.isOpen],
           () => {
@@ -80,7 +80,7 @@ const { Provider, use } = createContextProvider(
 
       // when connected to room
       // > update network state
-      createEffect(
+      createComputed(
         on(
           [() => room.connection, () => room.isOpen],
           () =>
@@ -95,7 +95,7 @@ const { Provider, use } = createContextProvider(
       );
 
       // print errors
-      createEffect(
+      createComputed(
         on(
           () => network.warning,
           () => {
@@ -107,7 +107,7 @@ const { Provider, use } = createContextProvider(
       );
 
       // print warnings
-      createEffect(
+      createComputed(
         on(
           () => network.error,
           () => {
@@ -136,7 +136,6 @@ function connect() {
   const { room } = useRoom();
   if (room.isHost) hostRoom();
   joinRoom();
-  setNetwork("isConnected", network.error === undefined);
 }
 
 function hostRoom() {
