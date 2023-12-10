@@ -1,5 +1,5 @@
-import { JSX } from "solid-js";
 import { useLocalPlayer } from "../contexts/LocalPlayerContext";
+import { JSX } from "solid-js";
 
 export default function NicknameInput(
   props: JSX.InputHTMLAttributes<HTMLInputElement>

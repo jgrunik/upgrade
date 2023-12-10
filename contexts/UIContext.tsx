@@ -6,8 +6,11 @@ export {
   use as useUI,
 };
 
-import { createEffect, on } from "solid-js";
+import { Accessor, createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
+import EntryScene from "../scenes/EntryScene";
+import GameScene from "../scenes/GameScene";
+import LobbyScene from "../scenes/LobbyScene";
 import { createContextProvider } from "./utils/createContextProvider";
 import createPersistance from "./utils/createPersistance";
 
@@ -17,12 +20,23 @@ type ColorScheme = (typeof colorSchemes)[number];
 const colorSchemeOptions = ["system", ...colorSchemes] as const;
 type ColorSchemeOption = (typeof colorSchemeOptions)[number];
 
+const scenes = {
+  Entry: EntryScene,
+  Lobby: LobbyScene,
+  Game: GameScene,
+};
+
 type UIState = {
   colorScheme: { isDark: boolean; setting: ColorSchemeOption };
+  scene: {
+    name: keyof typeof scenes;
+    component: (typeof scenes)[keyof typeof scenes];
+  };
 };
 
 const [UI, setUI] = createStore<UIState>({
   colorScheme: { isDark: false, setting: "system" },
+  scene: { name: "Entry", component: EntryScene },
 });
 
 const { Provider, use } = createContextProvider(

@@ -1,5 +1,5 @@
-import { JSX } from "solid-js/jsx-runtime";
 import { Component } from "solid-js";
+import { JSX } from "solid-js/jsx-runtime";
 
 interface ComposeProps {
   components: Array<Component<any>>;

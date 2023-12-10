@@ -1,6 +1,6 @@
-import ColorSchemeButton from "../components/ColorSchemeButton";
+import ColorSchemeButton from "../../components/ColorSchemeButton";
+import spadeSVG from "../../icons/spade.svg?component-solid";
 import "./Header.module.css";
-import spadeSVG from "../icons/spade.svg?component-solid";
 
 export default () => (
   <header class="not-selectable">

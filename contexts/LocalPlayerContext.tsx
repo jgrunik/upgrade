@@ -6,26 +6,25 @@ export {
 };
 
 import type Peer from "peerjs";
-import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { usePeer } from "./PeerContext";
 import { createContextProvider } from "./utils/createContextProvider";
 import createPersistance from "./utils/createPersistance";
 
 type Player = {
+  /** The id of the player */
   id?: string;
+  /** The display name of the player */
   nickname?: string;
+  /** The seed used to generate the player's avatar */
   avatarSeed?: string;
 };
 
 type LocalPlayer = Player & {
-  isHost?: boolean;
+  /** The local player's network object */
   peer?: Peer;
 };
 
 const [localPlayer, setLocalPlayer] = createStore<LocalPlayer>();
-
-const PeerType = usePeer();
 
 const { Provider, use } = createContextProvider(
   { localPlayer, setLocalPlayer },
@@ -37,19 +36,6 @@ const { Provider, use } = createContextProvider(
         ["playerId", () => localPlayer.id],
         ["nickname", () => localPlayer.nickname],
         ["avatarSeed", () => localPlayer.avatarSeed]
-      );
-
-      // set player.peer when player.id both PeerType are set
-      createEffect(
-        on(
-          [() => localPlayer.id, PeerType],
-          () => {
-            if (localPlayer.id === undefined) return;
-            if (PeerType() === undefined) return;
-            setLocalPlayer("peer", new (PeerType()!)(localPlayer.id!));
-          },
-          { defer: true }
-        )
       );
     },
 

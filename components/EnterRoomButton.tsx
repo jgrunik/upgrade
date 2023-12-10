@@ -1,9 +1,7 @@
-import { JSX, createMemo } from "solid-js";
-import { useLocalPlayer } from "../contexts/LocalPlayerContext";
 import { useRoom } from "../contexts/RoomContext";
+import { JSX, createMemo } from "solid-js";
 
-const { room, setRoom } = useRoom();
-const { localPlayer, setLocalPlayer } = useLocalPlayer();
+const { room } = useRoom();
 
 export default function EnterRoomButton(
   props: JSX.ButtonHTMLAttributes<HTMLButtonElement>
@@ -19,11 +17,6 @@ export default function EnterRoomButton(
       class="btn-secondary-outline"
       style="max-width: fit-content; font-size: xx-large; font-variant: small-caps"
       innerText={innerText()}
-      onClick={() => {
-        // bind player and room together
-        setLocalPlayer({ room });
-        setRoom({ localPlayer });
-      }}
     ></button>
   );
 }

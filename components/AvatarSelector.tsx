@@ -1,5 +1,5 @@
-import { JSX, Show, createMemo } from "solid-js";
 import { useLocalPlayer } from "../contexts/LocalPlayerContext";
+import { JSX, Show, createMemo, onMount } from "solid-js";
 
 const { localPlayer, setLocalPlayer } = useLocalPlayer();
 

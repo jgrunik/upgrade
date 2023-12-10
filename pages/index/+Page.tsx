@@ -1,29 +1,28 @@
+import Footer from "../../components/layouts/Footer";
+import Header from "../../components/layouts/Header";
 import Compose from "../../components/utils/Compose";
 import { GameProvider } from "../../contexts/GameContext";
 import { LocalPlayerProvider } from "../../contexts/LocalPlayerContext";
-import { PeerProvider } from "../../contexts/PeerContext";
+import { NetworkProvider } from "../../contexts/NetworkContext";
 import { RoomProvider } from "../../contexts/RoomContext";
-import { UIProvider } from "../../contexts/UIContext";
-import EntryLayout from "../../layouts/EntryLayout";
-import Footer from "../../layouts/Footer";
-import Header from "../../layouts/Header";
-
+import { UIProvider, useUI } from "../../contexts/UIContext";
 import "./Page.css";
+
 const contexts = [
   UIProvider,
-  GameProvider,
-  RoomProvider,
   LocalPlayerProvider,
-  PeerProvider,
+  RoomProvider,
+  NetworkProvider,
+  GameProvider,
 ];
+
+const { UI } = useUI();
 
 export default function LandingPage() {
   return (
     <Compose components={contexts}>
       <Header />
-      <main>
-        <EntryLayout />
-      </main>
+      <main>{UI.scene.component()}</main>
       <Footer />
     </Compose>
   );

@@ -1,4 +1,3 @@
-import { Component, JSX, createMemo } from "solid-js";
 import {
   ColorSchemeOption,
   toggleColorSchemeSetting,
@@ -7,6 +6,7 @@ import {
 import systemIcon from "../icons/computer-desktop.svg?component-solid";
 import darkIcon from "../icons/moon.svg?component-solid";
 import lightIcon from "../icons/sun.svg?component-solid";
+import { Component, JSX, createMemo } from "solid-js";
 
 const IconList: Record<
   ColorSchemeOption,
