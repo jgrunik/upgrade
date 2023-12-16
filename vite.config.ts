@@ -13,6 +13,7 @@ export default ({ mode }: { mode: string }) => {
       solidSvg({ defaultAsComponent: false }),
       vike({ prerender: true }),
     ],
+    build: { sourcemap: true },
   };
 
   return config;
