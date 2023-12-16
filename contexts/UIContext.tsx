@@ -1,10 +1,4 @@
-export {
-  ColorScheme,
-  ColorSchemeOption,
-  Provider as UIProvider,
-  toggleColorSchemeSetting,
-  use as useUI,
-};
+export { ColorScheme, ColorSchemeOption, Provider as UIProvider, use as useUI };
 
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -27,7 +21,11 @@ const scenes = {
 };
 
 type UIState = {
-  colorScheme: { isDark: boolean; setting: ColorSchemeOption };
+  colorScheme: {
+    isDark: boolean;
+    setting: ColorSchemeOption;
+    toggleSetting: () => void;
+  };
   scene: {
     name: keyof typeof scenes;
     component: (typeof scenes)[keyof typeof scenes];
@@ -35,7 +33,11 @@ type UIState = {
 };
 
 const [UI, setUI] = createStore<UIState>({
-  colorScheme: { isDark: false, setting: "system" },
+  colorScheme: {
+    isDark: false,
+    setting: "system",
+    toggleSetting: toggleColorSchemeSetting,
+  },
   scene: { name: "Entry", component: EntryScene },
 });
 

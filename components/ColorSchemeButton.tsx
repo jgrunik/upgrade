@@ -1,17 +1,14 @@
-import {
-  ColorSchemeOption,
-  toggleColorSchemeSetting,
-  useUI,
-} from "../contexts/UIContext";
+import { createMemo } from "solid-js";
+import { useUI } from "../contexts/UIContext";
 import systemIcon from "../icons/computer-desktop.svg?component-solid";
 import darkIcon from "../icons/moon.svg?component-solid";
 import lightIcon from "../icons/sun.svg?component-solid";
-import { Component, JSX, createMemo } from "solid-js";
 
-const IconList: Record<
-  ColorSchemeOption,
-  Component<JSX.SvgSVGAttributes<SVGSVGElement>>
-> = { system: systemIcon, dark: darkIcon, light: lightIcon } as const;
+const IconList = {
+  system: systemIcon,
+  dark: darkIcon,
+  light: lightIcon,
+} as const;
 
 export default function ColorSchemeButton() {
   const { UI } = useUI();
@@ -23,7 +20,7 @@ export default function ColorSchemeButton() {
       class="card border"
       style="margin-right: 0; margin: 0; padding: 0.5rem"
       popover-left={`color scheme '${UI.colorScheme.setting}'`}
-      onClick={toggleColorSchemeSetting}
+      onClick={UI.colorScheme.toggleSetting}
     >
       {
         // @ts-expect-error
