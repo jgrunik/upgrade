@@ -1,7 +1,7 @@
 export { Provider as NetworkProvider, use as useNetwork };
 
 import Peer, { DataConnection } from "peerjs";
-import { createComputed, on } from "solid-js";
+import { createMemo, on } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
 import { Player, useLocalPlayer } from "./LocalPlayerContext";
 import { Room, useRoom } from "./RoomContext";
@@ -28,19 +28,19 @@ type NetworkEvent = { message: string; context?: any };
 type NetworkWarning = NetworkEvent;
 type NetworkError = NetworkEvent;
 
-type Network = {
-  /** A reference to the Peer object type which is loaded at DOM mount */
-  PeerObject?: typeof Peer;
+interface Network {
+  /** A reference to the Peer class which is loaded at DOM mount */
+  PeerClass?: typeof Peer;
   /** Initiates networking */
-  connect: () => void;
   isConnected: boolean;
   error?: NetworkError;
   warning?: NetworkWarning;
-};
+  connect: () => void;
+}
 
 const [network, setNetwork] = createStore<Network>({
-  connect,
   isConnected: false,
+  connect,
 });
 
 const { localPlayer, setLocalPlayer } = useLocalPlayer();
@@ -57,20 +57,19 @@ const { Provider, use } = createContextProvider(
 
       // when room peer is set
       // > initialise host room's networking
-      createComputed(
+      createMemo(
         on(() => (room as HostRoom).peer, setupHostRoom, { defer: true })
       );
 
       // when player peer & host room are set
       // > initialise local player's networking
-      createComputed(
+      createMemo(
         on(
           [() => localPlayer.peer, () => room.isOpen],
           () => {
             // if not host: start immediately
-            if (!room.isHost) return setupLocalPlayer();
             // if is host: wait for room to open
-            if (room.isOpen) setupLocalPlayer();
+            if (!room.isHost || room.isOpen) return setupLocalPlayer();
           },
           {
             defer: true,
@@ -80,7 +79,7 @@ const { Provider, use } = createContextProvider(
 
       // when connected to room
       // > update network state
-      createComputed(
+      createMemo(
         on(
           [() => room.connection, () => room.isOpen],
           () =>
@@ -94,36 +93,26 @@ const { Provider, use } = createContextProvider(
         )
       );
 
-      // print errors
-      createComputed(
-        on(
-          () => network.warning,
-          () => {
-            const { message, context } = network.warning!;
-            console.warn(message, context);
-          },
-          { defer: true }
-        )
-      );
-
-      // print warnings
-      createComputed(
-        on(
-          () => network.error,
-          () => {
-            const { message, context } = network.error!;
-            console.error(message, context);
-          },
-          { defer: true }
-        )
-      );
+      (["warning", "error"] as const).forEach((logChannel) => {
+        createMemo(
+          on(
+            () => network[logChannel],
+            () => {
+              const { message, context } = network[logChannel]!;
+              console.warn(message, context);
+            },
+            { defer: true }
+          )
+        );
+      });
     },
 
     async onMount() {
       // console.log("[Network Context] Mounted");
 
-      const PeerObject = (await import("peerjs")).default;
-      setNetwork("PeerObject", () => PeerObject);
+      import("peerjs").then((peerjs) =>
+        setNetwork("PeerClass", () => peerjs.default)
+      );
     },
 
     onCleanUp() {
@@ -139,11 +128,11 @@ function connect() {
 }
 
 function hostRoom() {
-  setRoom("peer", new network.PeerObject!(room.id!));
+  setRoom("peer", new network.PeerClass!(room.id!));
 }
 
 function joinRoom() {
-  setLocalPlayer("peer", new network.PeerObject!(localPlayer.id!));
+  setLocalPlayer("peer", new network.PeerClass!(localPlayer.id!));
 }
 
 function setupHostRoom() {
@@ -155,11 +144,11 @@ function setupHostRoom() {
 
     .on("connection", (connection) => {
       const playerId = connection.peer;
-      console.log("Player connected", { playerId });
+      console.log("Player connecting", { playerId });
 
       connection
         .on("open", () => {
-          console.log("Player connection open", { playerId });
+          console.log("Player connected", { playerId });
 
           // add player to list
           const roomPlayer: HostedPlayer = { id: playerId, connection };
@@ -206,53 +195,61 @@ function setupLocalPlayer() {
   const roomId = room.id!;
 
   localPlayer
-    .peer!.on("error", (error, context?) => {
-      console.log(localPlayer.peer);
+    .peer!.on("error", (error) => {
       setNetwork("error", {
-        message: "Local Player error starting Peer object",
-        context: { error, context },
+        message: "Error with localPlayer.peer",
+        context: { error },
       });
     })
-    .on("connection", (connection: DataConnection) => {
-      console.log("Connection from", { id: connection.peer });
-    });
-
-  console.log(`Connecting to room`, { roomId });
-
-  const roomConnection = localPlayer.peer!.connect(roomId);
-
-  roomConnection
     .on("open", () => {
-      console.log(`Connected to room`, { roomId });
+      console.log(`Connecting to room`, { roomId });
+      const roomConnection = localPlayer.peer!.connect(roomId);
 
-      setRoom("connection", roomConnection);
-    })
+      roomConnection
+        .on("open", () => {
+          console.log(`Connected to room`, { roomId });
 
-    .on("close", () => {
-      console.log(`Disconnected from room`, { roomId });
-    })
+          setRoom("connection", roomConnection);
+        })
 
-    .on("error", (error) => {
-      setNetwork("error", {
-        message: "Local Player error with room",
-        context: { roomId, error },
-      });
-    })
+        .on("close", () => {
+          console.log(`Disconnected from room`, { roomId });
+        })
 
-    .on("data", (data) => {
-      console.log(`Data from room`, { roomId, data });
-      // console.table(data);
+        .on("error", (error) => {
+          setNetwork("error", {
+            message: "Local Player error with room",
+            context: { roomId, error },
+          });
+        })
 
-      const { messageType, payload } = data as any;
+        .on("data", (data) => {
+          console.log(`Data from room`, { roomId, data });
+          // console.table(data);
 
-      if (messageType === undefined) {
-        setNetwork("error", {
-          message: "Malformed data from room",
-          context: { roomId, data },
+          const { messageType, payload } = data as any;
+
+          if (messageType === undefined) {
+            setNetwork("error", {
+              message: "Malformed data from room",
+              context: { roomId, data },
+            });
+            return;
+          }
+
+          DataEventHandlers[messageType as DataEventType](
+            roomConnection,
+            payload
+          );
         });
-        return;
-      }
-
-      DataEventHandlers[messageType as DataEventType](roomConnection, payload);
     });
 }
+
+// type PeerEvent = {
+//   open: (id: string) => void;
+//   close: () => void;
+// };
+
+// const onPeerOpen: Function = (id: string) => {};
+// const x = "";
+// PeerOptions;
