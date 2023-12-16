@@ -1,4 +1,4 @@
-import { Accessor, createComputed, on } from "solid-js";
+import { Accessor, createMemo, on } from "solid-js";
 
 /** updates localStorage with supplied values each time they change */
 export default function createPersistance<T extends string>(
@@ -11,7 +11,7 @@ function _createPersistance<T extends string>(
   key: string,
   value: Accessor<T | undefined>
 ) {
-  createComputed(
+  createMemo(
     on(value, () => localStorage.setItem(key, value()!), { defer: true })
   );
 }

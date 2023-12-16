@@ -1,4 +1,4 @@
-import { createComputed, createSignal, on } from "solid-js";
+import { createComputed, createMemo, createSignal, on } from "solid-js";
 import AvatarSelector from "../components/AvatarSelector";
 import EnterRoomButton from "../components/EnterRoomButton";
 import NicknameInput from "../components/NicknameInput";
@@ -18,7 +18,7 @@ export default function EntryScene() {
   const [entryAttempt, setEntryAttempt] =
     createSignal<EntryAttempt>("Unattempted");
 
-  createComputed(
+  createMemo(
     on(
       () => network.isConnected,
       () => {
