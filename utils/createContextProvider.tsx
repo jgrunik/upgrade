@@ -6,20 +6,22 @@ import {
   useContext,
 } from "solid-js";
 
-export function createContextProvider<T>(
+export function createContextProvider<T, Context = any>(
   value: T,
   callbacks: {
-    onInit?: () => void;
-    onMount?: () => void;
-    onCleanUp?: () => void;
+    onInit?: (props: ParentProps) => Context;
+    onMount?: (context?: Context) => Context;
+    onCleanUp?: (context?: Context) => void;
   } = {}
 ) {
   const Context = createContext(value);
 
   function Provider(props: ParentProps) {
-    callbacks.onInit?.();
-    onMount(() => callbacks.onMount?.());
-    onCleanup(() => callbacks.onCleanUp?.());
+    let context = callbacks.onInit?.(props);
+    onMount(() => {
+      context = callbacks.onMount?.(context);
+    });
+    onCleanup(() => callbacks.onCleanUp?.(context));
     return <Context.Provider value={value}>{props.children}</Context.Provider>;
   }
 

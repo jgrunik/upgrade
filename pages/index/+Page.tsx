@@ -1,20 +1,10 @@
-import Footer from "../../components/layouts/Footer";
-import Header from "../../components/layouts/Header";
-import Compose from "../../components/utils/Compose";
-import { GameProvider } from "../../contexts/GameContext";
-import { LocalPlayerProvider } from "../../contexts/LocalPlayerContext";
-import { NetworkProvider } from "../../contexts/NetworkContext";
-import { RoomProvider } from "../../contexts/RoomContext";
-import { UIProvider, useUI } from "../../contexts/UIContext";
+import AlertModal from "../../components/AlertModal";
+import { useUI } from "../../contexts/ui";
+import Compose from "../../utils/Compose";
+import contexts from "../../utils/contexts";
+import Footer from "./Footer";
+import Header from "./Header";
 import "./Page.css";
-
-const contexts = [
-  UIProvider,
-  LocalPlayerProvider,
-  RoomProvider,
-  NetworkProvider,
-  GameProvider,
-];
 
 const { UI } = useUI();
 
@@ -24,6 +14,7 @@ export default function LandingPage() {
       <Header />
       <main>{UI.scene.component()}</main>
       <Footer />
+      <AlertModal />
     </Compose>
   );
 }

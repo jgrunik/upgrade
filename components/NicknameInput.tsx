@@ -1,4 +1,4 @@
-import { useLocalPlayer } from "../contexts/LocalPlayerContext";
+import { useLocalPlayer } from "../contexts/player.local";
 import { JSX } from "solid-js";
 
 export default function NicknameInput(

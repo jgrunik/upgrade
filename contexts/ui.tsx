@@ -1,12 +1,12 @@
 export { ColorScheme, ColorSchemeOption, Provider as UIProvider, use as useUI };
 
-import { createEffect, on } from "solid-js";
+import { JSX, ParentProps, createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import EntryScene from "../scenes/EntryScene";
 import GameScene from "../scenes/GameScene";
 import LobbyScene from "../scenes/LobbyScene";
-import { createContextProvider } from "./utils/createContextProvider";
-import createPersistance from "./utils/createPersistance";
+import { createContextProvider } from "../utils/createContextProvider";
+import createPersistance from "../utils/createPersistance";
 
 const colorSchemes_matchMedia = ["light", "dark"] as const;
 const colorSchemes = colorSchemes_matchMedia;
@@ -30,6 +30,17 @@ type UIState = {
     name: keyof typeof scenes;
     component: (typeof scenes)[keyof typeof scenes];
   };
+  alert: {
+    show: boolean;
+    level:
+      | "alert-primary"
+      | "alert-secondary"
+      | "alert-success"
+      | "alert-warning"
+      | "alert-danger";
+    innerHTML?: JSX.Element;
+    dialogRef?: HTMLDialogElement;
+  };
 };
 
 const [UI, setUI] = createStore<UIState>({
@@ -39,14 +50,17 @@ const [UI, setUI] = createStore<UIState>({
     toggleSetting: toggleColorSchemeSetting,
   },
   scene: { name: "Entry", component: EntryScene },
+  alert: {
+    show: false,
+    level: "alert-warning",
+    innerHTML: "Hello, world!",
+  },
 });
 
 const { Provider, use } = createContextProvider(
   { UI, setUI },
   {
     onInit() {
-      // console.log("[UI Context] Initialising");
-
       createPersistance(["colorSchemeSetting", () => UI.colorScheme.setting]);
 
       // apply dark mode class on the html element
@@ -72,11 +86,19 @@ const { Provider, use } = createContextProvider(
             : isSystemDark() ?? UI.colorScheme.isDark
         );
       });
+
+      // when scene name changes
+      // update component to match
+      createEffect(
+        on(
+          () => UI.scene.name,
+          () => setUI("scene", { component: scenes[UI.scene.name] }),
+          { defer: true }
+        )
+      );
     },
 
     onMount() {
-      // console.log("[UI Context] Mounted");
-
       const colorSchemeSetting =
         (localStorage.getItem("colorSchemeSetting") as ColorSchemeOption) ??
         UI.colorScheme.setting;
@@ -91,9 +113,7 @@ const { Provider, use } = createContextProvider(
         });
     },
 
-    onCleanUp() {
-      // console.log("[UI Context] Cleaning");
-    },
+    onCleanUp() {},
   }
 );
 

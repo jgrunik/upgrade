@@ -9,17 +9,17 @@
     "deploy": "bun run clean; bun run build; bunx gh-pages --dist dist/client --branch gh-pages --dest docs --nojekyll"
   },
   "devDependencies": {
-    "@types/node": "^20.10.1",
+    "@types/node": "^20.10.4",
     "gh-pages": "^6.1.0",
-    "typescript": "^5.3.2",
-    "vite": "^5.0.4",
-    "vite-plugin-solid": "^2.7.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-solid": "^2.8.0",
     "vite-plugin-solid-svg": "^0.7.0"
   },
   "dependencies": {
     "papercss": "^1.9.2",
-    "peerjs": "^1.5.1",
-    "solid-js": "^1.8.6",
-    "vike": "^0.4.147"
+    "peerjs": "^1.5.2",
+    "solid-js": "^1.8.7",
+    "vike": "^0.4.150"
   }
 }

@@ -1,5 +1,5 @@
 import { createMemo } from "solid-js";
-import { useUI } from "../contexts/UIContext";
+import { useUI } from "../contexts/ui";
 import systemIcon from "../icons/computer-desktop.svg?component-solid";
 import darkIcon from "../icons/moon.svg?component-solid";
 import lightIcon from "../icons/sun.svg?component-solid";

@@ -1,48 +1,95 @@
-import { createComputed, createMemo, createSignal, on } from "solid-js";
+import { createEffect, createMemo, createSignal, on } from "solid-js";
 import AvatarSelector from "../components/AvatarSelector";
 import EnterRoomButton from "../components/EnterRoomButton";
 import NicknameInput from "../components/NicknameInput";
-import { useLocalPlayer } from "../contexts/LocalPlayerContext";
-import { useNetwork } from "../contexts/NetworkContext";
-import { useUI } from "../contexts/UIContext";
+import { useLocalPlayer } from "../contexts/player.local";
+import { joinRoom, useRoom } from "../contexts/room";
+import { createHostRoom } from "../contexts/room.host";
+import { useUI } from "../contexts/ui";
 import "./EntryScene.css";
 
-type EntryAttempt = "Unattempted" | "Pending" | "Successful" | "Failed";
-
-const { localPlayer } = useLocalPlayer();
-const { network } = useNetwork();
-
 export default function EntryScene() {
-  const { setUI } = useUI();
+  const { localPlayer } = useLocalPlayer();
+  const { room } = useRoom();
+  const { UI, setUI } = useUI();
+  const [isPendingEntry, setIsPendingEntry] = createSignal(false);
 
-  const [entryAttempt, setEntryAttempt] =
-    createSignal<EntryAttempt>("Unattempted");
-
+  // when room is connected,
+  // transition to Lobby
   createMemo(
     on(
-      () => network.isConnected,
+      () => room.connection,
+      () => setUI("scene", { name: "Lobby" }),
+      { defer: true }
+    )
+  );
+
+  // when host room is ready,
+  // join as host player
+  createEffect(
+    on(
+      () => room.id,
       () => {
-        if (!network.isConnected) return;
-        setUI("scene", { name: "Lobby" });
+        if (room.isHost) joinRoom();
       },
       { defer: true }
     )
   );
 
-  function tryEnter() {
-    setEntryAttempt("Pending");
-    network.connect();
+  // when a room error occurs,
+  // show alert modal
+  createEffect(
+    on(
+      () => room.error!,
+      (error) => {
+        switch (error.type ?? error.name) {
+          case "peer-unavailable": {
+            setUI("alert", {
+              show: true,
+              level: "alert-warning",
+              innerHTML: "Could not connect to room 🤔",
+            });
+            break;
+          }
+          default: {
+            setUI("alert", {
+              show: true,
+              level: "alert-danger",
+              innerHTML: error.message,
+            });
+          }
+        }
+      },
+      { defer: true }
+    )
+  );
+
+  // when alert modal closes,
+  // re-enable inputs
+  createEffect(() => {
+    if (!UI.alert.show) setIsPendingEntry(false);
+  });
+
+  function enterRoom() {
+    setIsPendingEntry(true);
+    const { room } = useRoom();
+    if (room.isHost) {
+      createHostRoom(); // local player will autojoin when host room is ready
+    } else {
+      joinRoom();
+    }
   }
 
   return (
     <>
       <section>
-        <AvatarSelector disabled={entryAttempt() == "Pending"} />
-        <NicknameInput disabled={entryAttempt() == "Pending"} />
+        <AvatarSelector disabled={isPendingEntry()} />
+        <NicknameInput disabled={isPendingEntry()} />
       </section>
       <EnterRoomButton
-        disabled={!localPlayer?.nickname || entryAttempt() == "Pending"}
-        onclick={tryEnter}
+        disabled={!localPlayer?.nickname || isPendingEntry()}
+        onclick={enterRoom}
+        loading={isPendingEntry}
       />
     </>
   );

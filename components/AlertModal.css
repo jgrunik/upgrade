@@ -1,0 +1,6 @@
+dialog {
+  padding: 0;
+  border: none !important;
+  /* !important used here to override polyfill CSS, if loaded */
+  background: none;
+}

@@ -1,7 +1,6 @@
+export { Game, GameProvider, useGame };
 import { createStore } from "solid-js/store";
-import { createContextProvider } from "./utils/createContextProvider";
-
-export { Game, Provider as GameProvider, use as useGame };
+import { createContextProvider } from "../utils/createContextProvider";
 
 type Player = {};
 type Pile = {
@@ -40,7 +39,7 @@ type Game = {
 
 const [game, setGame] = createStore<Game>({});
 
-const { Provider, use } = createContextProvider(
+const { Provider: GameProvider, use: useGame } = createContextProvider(
   { game, setGame },
   {
     onInit() {

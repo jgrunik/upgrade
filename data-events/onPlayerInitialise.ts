@@ -1,5 +1,5 @@
 import { DataConnection } from "peerjs";
-import { useRoom } from "../RoomContext";
+import { useRoom } from "../contexts/room";
 
 export default (
   connection: DataConnection,
