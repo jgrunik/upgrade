@@ -16,22 +16,22 @@ export default () => (
       </a>
       &nbsp;by&nbsp;
       <a
+        style="margin-right:0.5ch;"
         rel="cc:attributionURL dct:creator"
         property="cc:attributionName"
         href="https://github.com/jgrunik"
       >
         Joshua Grunik
       </a>
-      &nbsp;is licensed under&nbsp;
+      is licenced under
       <a
+        style="display: inline-flex; margin-left: 0.5ch;"
         rel="license noopener noreferrer"
         href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
         target="_blank"
-      >
-        CC BY-NC-SA 4.0
-      </a>
-      <br />
-      <span style="display: inline-flex; height: 2ch">
+        innerText="CC BY-NC-SA 4.0"
+      />
+      <span style="display: inline-flex; height: 1.75ch; margin-left: 0.5ch;">
         <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" />
         <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" />
         <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" />
