@@ -30,18 +30,20 @@ A standard game can be played with 2 or more players and can easily be adjusted 
 1. Shuffle the deck
 2. Provide each player with 3 tokens
 3. Deal 3 cards, face-down, to each player
-4. Players simultaneously play their cards in front of them
+4. Each player simultaneously places the following cards in front of them:
    - 2 face-down defence cards
-   - 1 face-up attack card - _in front of defence cards_
+   - 1 face-up attack card - _(in front of defence cards)_
 
 ## Gameplay
 
-Turns progress in a clockwise rotation until only one player remains.
+Starting with the dealer, turns progress clockwise.
 
 In a turn, the current player must:
 
 1. Draw a card
 2. **_Upgrade_**, **_Discard_**, or **_Attack_**.
+
+Turns continue until only one player remains.
 
 ### **_Upgrade_**
 
