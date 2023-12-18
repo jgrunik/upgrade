@@ -8,9 +8,7 @@ import { dangerouslySkipEscape, escapeInject, stampPipe } from "vike/server";
 import { PageLayout } from "./PageLayout";
 import logoSVG from "../icons/logo.svg";
 
-const onRenderHtml: OnRenderHtmlAsync = async (
-  pageContext
-): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext) => {
   const { pipe } = renderToStream(() => (
     <PageLayout pageContext={pageContext} />
   ));

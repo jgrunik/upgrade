@@ -1,6 +1,5 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient };
-
 import { createStore } from "solid-js/store";
 import { hydrate } from "solid-js/web";
 import type { OnRenderClientAsync, PageContextClient } from "vike/types";
@@ -16,7 +15,7 @@ const onRenderClient: OnRenderClientAsync = async (
   pageContext
 ): ReturnType<OnRenderClientAsync> => {
   // Dispose to prevent duplicate pages when navigating.
-  if (dispose) dispose();
+  dispose?.();
 
   setPageContext(pageContext);
 
