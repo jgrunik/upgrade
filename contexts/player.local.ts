@@ -2,7 +2,11 @@ export { LocalPlayerProvider, joinRoom, useLocalPlayer, type LocalPlayer };
 
 import { createStore } from "solid-js/store";
 import { usePeerJS } from "../contexts/peer";
-import DataEventHandlers, { DataEventType } from "../utils/DataEventHandlers";
+import {
+  DataEvent,
+  DataEventHandlers,
+  type DataEventType,
+} from "../utils/DataEvents";
 import { createContextProvider } from "../utils/createContextProvider";
 import createPersistance from "../utils/createPersistance";
 import { Player } from "./player";
@@ -60,6 +64,12 @@ function joinRoom() {
         .on("open", () => {
           console.log("Connected to room", { roomId });
           setRoom("connection", roomConnection);
+          roomConnection.send(
+            new DataEvent("PLAYER_INITIAL_INFO", {
+              nickname: localPlayer.nickname!,
+              avatarSeed: localPlayer.avatarSeed!,
+            })
+          );
         })
 
         .on("close", () => {
@@ -75,9 +85,9 @@ function joinRoom() {
           console.log(`Data from room`, { roomId, data });
           // console.table(data);
 
-          const { messageType, payload } = data as any;
+          const { type, payload } = data as any;
 
-          if (messageType === undefined) {
+          if (type === undefined) {
             const error = new Error("Malformed data from room", {
               cause: { roomId, data },
             });
@@ -86,10 +96,7 @@ function joinRoom() {
             return;
           }
 
-          DataEventHandlers[messageType as DataEventType](
-            roomConnection,
-            payload
-          );
+          DataEventHandlers[type as DataEventType](roomConnection, payload);
         });
     });
 }

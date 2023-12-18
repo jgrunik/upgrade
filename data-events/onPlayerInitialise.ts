@@ -1,22 +1,23 @@
 import { DataConnection } from "peerjs";
 import { useRoom } from "../contexts/room";
 
-export default (
-  connection: DataConnection,
-  data: { nickname: string; avatarSeed: string }
-) => {
-  const { peer: playerId } = connection;
-  const { nickname, avatarSeed } = data;
-  const { room, setRoom } = useRoom();
+type Payload = { nickname: string; avatarSeed: string };
 
-  console.log("Initialising player", { playerId, ...data });
+export default {
+  PLAYER_INITIAL_INFO: (connection: DataConnection, data: Payload) => {
+    const { peer: playerId } = connection;
+    const { nickname, avatarSeed } = data;
+    const { room, setRoom } = useRoom();
 
-  setRoom("players", (players) =>
-    players.map((player) => {
-      if (player.id !== playerId) return player;
-      return { ...player, nickname, avatarSeed };
-    })
-  );
+    console.log("Initialising player", { playerId, ...data });
 
-  console.table(room.players);
+    setRoom("players", (players) =>
+      players.map((player) => {
+        if (player.id !== playerId) return player;
+        return { ...player, nickname, avatarSeed };
+      })
+    );
+
+    console.table({ id: playerId, ...data });
+  },
 };

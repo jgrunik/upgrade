@@ -1,11 +1,11 @@
 export { createHostRoom, useHostRoom, type HostRoom, type HostedPlayer };
 
-import { DataConnection } from "peerjs";
+import { type DataConnection } from "peerjs";
 import { type SetStoreFunction } from "solid-js/store";
-import DataEventHandlers, { DataEventType } from "../utils/DataEventHandlers";
+import { DataEventHandlers, type DataEventType } from "../utils/DataEvents";
 import { usePeerJS } from "./peer";
 import { type Player } from "./player";
-import { Room, useRoom } from "./room";
+import { useRoom, type Room } from "./room";
 
 type HostRoom = Room & {
   /** The local player is hosting the room */
@@ -66,14 +66,14 @@ function createHostRoom() {
         )
 
         .on("data", (data: any) => {
-          const { messageType, payload } = data;
+          const { type, payload } = data;
 
-          if (messageType === undefined) {
+          if (type === undefined) {
             console.warn("Malformed data from player", { playerId, data });
             return;
           }
 
-          DataEventHandlers[messageType as DataEventType](connection, payload);
+          DataEventHandlers[type as DataEventType](connection, payload);
         });
     });
 
