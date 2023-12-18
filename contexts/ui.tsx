@@ -1,6 +1,6 @@
 export { ColorScheme, ColorSchemeOption, Provider as UIProvider, use as useUI };
 
-import { JSX, ParentProps, createEffect, on } from "solid-js";
+import { JSX, createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import EntryScene from "../scenes/EntryScene";
 import GameScene from "../scenes/GameScene";

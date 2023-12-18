@@ -9,9 +9,9 @@ export default ({ mode }: { mode: string }) => {
   const config: UserConfig = {
     base: process.env.VITE_BASE_URL,
     plugins: [
+      vike({ prerender: true }),
       solid({ ssr: true }),
       solidSvg({ defaultAsComponent: false }),
-      vike({ prerender: true }),
     ],
     build: { sourcemap: true },
   };
