@@ -24,7 +24,7 @@ export default function EnterRoomButton(props: EnterRoomButtonProps) {
       class="btn-secondary-outline"
       style="fill:var(--secondary); min-width: 11ch; max-width: fit-content; font-size: xx-large; font-variant: small-caps"
     >
-      {innerHTML()}
+      {props.children ?? innerHTML()}
     </button>
   );
 }
