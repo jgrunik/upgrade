@@ -1,5 +1,5 @@
-import { useLocalPlayer } from "../contexts/player.local";
 import { JSX } from "solid-js";
+import { useLocalPlayer } from "../contexts/player.local";
 
 export default function NicknameInput(
   props: JSX.InputHTMLAttributes<HTMLInputElement>
@@ -11,7 +11,7 @@ export default function NicknameInput(
       {...props}
       id="nickname_name_input"
       type="text"
-      placeholder="nickname goes here ♥"
+      placeholder="nickname goes here"
       class="container border-3 border-dashed shadow shadow-hover shadow-small"
       maxlength="24"
       style={{
