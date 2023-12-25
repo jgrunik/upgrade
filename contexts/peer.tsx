@@ -1,4 +1,4 @@
-export { PeerJSProvider, usePeerJS, createPeer };
+export { PeerJSProvider, createPeer, usePeerJS };
 import { type Peer } from "peerjs";
 import { createSignal } from "solid-js";
 import { createContextProvider } from "../utils/createContextProvider";
@@ -15,6 +15,6 @@ const { Provider: PeerJSProvider, use: usePeerJS } = createContextProvider(
 
 function createPeer(...args: ConstructorParameters<typeof Peer>) {
   const Peer = _Peer();
-  if (!Peer) throw new Error("Peer used before ready");
+  if (!Peer) throw new Error("PeerJS referenced before imported");
   return new Peer(...args);
 }
