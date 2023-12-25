@@ -14,16 +14,7 @@ export default () => (
       >
         Upgrade
       </a>
-      &nbsp;by&nbsp;
-      <a
-        style="margin-right:0.5ch;"
-        rel="cc:attributionURL dct:creator"
-        property="cc:attributionName"
-        href="https://github.com/jgrunik"
-      >
-        Joshua Grunik
-      </a>
-      is licenced under
+      &nbsp;is licenced under
       <a
         style="display: inline-flex; margin-left: 0.5ch;"
         rel="license noopener noreferrer"
