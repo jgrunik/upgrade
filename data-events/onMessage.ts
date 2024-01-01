@@ -6,6 +6,6 @@ export default {
     data: { message: string }
   ) {
     const { message } = data;
-    console.log(`Message received.`, { id: connection.peer, message });
+    console.log(`Message received`, { id: connection.peer, message });
   },
 };

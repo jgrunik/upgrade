@@ -14,24 +14,16 @@ type HostRoom = Room & {
   players: HostedPlayer[];
 };
 
-type HostedPlayer = Player & {
+type HostedPlayer = Partial<Player> & {
   /** The connection to remote player */
   connection?: DataConnection;
-};
-
-const useHostRoom = () => {
-  const { room: hostRoom, setRoom: setHostRoom } = useRoom() as {
-    room: HostRoom;
-    setRoom: SetStoreFunction<HostRoom>;
-  };
-  return { hostRoom, setHostRoom };
 };
 
 function createHostRoom() {
   console.log("Creating Host Room");
   const { hostRoom, setHostRoom } = useHostRoom();
-  const { createPeer } = usePeerJS();
-  const peer = createPeer(hostRoom.id!);
+  const { Peer } = usePeerJS();
+  const peer = new (Peer()!)(hostRoom.id!);
 
   peer
     .on("error", (error) => {
@@ -45,31 +37,36 @@ function createHostRoom() {
     })
 
     .on("connection", (connection) => {
-      const playerId = connection.peer;
-      console.log("Player connecting", { playerId });
+      const peerId = connection.peer;
+      console.log("Peer connecting", { peerId });
 
       connection
         .on("open", () => {
-          console.log("Player connected", { playerId });
+          console.log("Peer connected", { peerId });
 
           // add player to list
-          const roomPlayer: HostedPlayer = { id: playerId, connection };
+          const roomPlayer: HostedPlayer = { connection };
           setHostRoom("players", (players) => [...players, roomPlayer]);
         })
 
         .on("close", () => {
-          console.log("Player disconnected", { playerId });
+          console.log("Player disconnected", { peerId });
+          setHostRoom("players", (players: HostedPlayer[]) => {
+            return players.filter(
+              ({ connection }) => connection?.peer !== peerId
+            );
+          });
         })
 
         .on("error", (error) =>
-          console.warn("Player connection error", { playerId, error })
+          console.warn("Player connection error", { peerId, error })
         )
 
         .on("data", (data: any) => {
           const { type, payload } = data;
 
           if (type === undefined) {
-            console.warn("Malformed data from player", { playerId, data });
+            console.warn("Malformed data from player", { peerId, data });
             return;
           }
 
@@ -79,3 +76,11 @@ function createHostRoom() {
 
   return { hostRoom, setHostRoom };
 }
+
+const useHostRoom = () => {
+  const { room: hostRoom, setRoom: setHostRoom } = useRoom() as {
+    room: HostRoom;
+    setRoom: SetStoreFunction<HostRoom>;
+  };
+  return { hostRoom, setHostRoom };
+};

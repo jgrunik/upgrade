@@ -1,10 +1,13 @@
 import { Index, onMount } from "solid-js";
+import StartGameButton from "../components/StartGameButton";
+import Tabs from "../components/Tabs";
 import { useRoom } from "../contexts/room";
 import optionsSVG from "../icons/options.svg?component-solid";
 import "./LobbyScene.css";
 
 export default function LobbyLayout() {
   const { room } = useRoom();
+
   onMount(() => {
     const params = new URLSearchParams(document.location.search);
     const params_roomId = params.get("room");
@@ -12,30 +15,31 @@ export default function LobbyLayout() {
   });
 
   return (
-    <div class="row flex-spaces tabs">
-      <input id="tab1" type="radio" name="tabs" checked />
-      <label for="tab1">{room.players.length} : Lobby</label>
-      <input id="tab2" type="radio" name="tabs" />
-      <label for="tab2" style={{ height: "5em" }}>
-        {
-          //@ts-expect-error
-          optionsSVG
-        }{" "}
-        Options
-      </label>
-      <div class="content" id="content1">
-        <h4>
-          {`${room.players.length} player${
-            room.players.length == 1 ? "" : "s"
-          } in lobby`}
-        </h4>
-        <Index each={room.players}>
-          {(player, i) => <li>{player().id}</li>}
-        </Index>
-      </div>
-      <div class="content" id="content2">
-        settings...
-      </div>
-    </div>
+    <>
+      <Tabs
+        activeTab={0}
+        tabs={[
+          {
+            label: `${room.players.length} : Lobby`,
+            content: (
+              <Index each={room.players}>
+                {(player, i) => {
+                  return (
+                    <li style={{ "font-size": "xx-large" }}>
+                      {player().nickname ?? `Player ${i + 1} is joining...`}
+                    </li>
+                  );
+                }}
+              </Index>
+            ),
+          },
+          {
+            label: <>{optionsSVG} Options</>,
+            content: "settings...",
+          },
+        ]}
+      />
+      <StartGameButton loading={() => false} />
+    </>
   );
 }

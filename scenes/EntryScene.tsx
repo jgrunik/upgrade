@@ -36,34 +36,6 @@ export default function EntryScene() {
     )
   );
 
-  // when a room error occurs,
-  // show alert modal
-  createEffect(
-    on(
-      () => room.error!,
-      (error) => {
-        switch (error.type ?? error.name) {
-          case "peer-unavailable": {
-            setUI("alert", {
-              show: true,
-              level: "alert-warning",
-              innerHTML: "Could not connect to room 🤔",
-            });
-            break;
-          }
-          default: {
-            setUI("alert", {
-              show: true,
-              level: "alert-danger",
-              innerHTML: error.message,
-            });
-          }
-        }
-      },
-      { defer: true }
-    )
-  );
-
   // when alert modal closes,
   // re-enable inputs
   createEffect(() => {

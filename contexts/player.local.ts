@@ -1,5 +1,6 @@
 export { LocalPlayerProvider, joinRoom, useLocalPlayer, type LocalPlayer };
 
+import Peer from "peerjs";
 import { createStore } from "solid-js/store";
 import { usePeerJS } from "../contexts/peer";
 import {
@@ -14,7 +15,7 @@ import { useRoom } from "./room";
 
 type LocalPlayer = Player & {
   /** The local player's network object */
-  // peer?: Peer;
+  peer?: Peer;
 };
 
 const [localPlayer, setLocalPlayer] = createStore<LocalPlayer>();
@@ -32,6 +33,7 @@ const { Provider: LocalPlayerProvider, use: useLocalPlayer } =
       },
 
       onMount() {
+        const { createPeer } = usePeerJS();
         setLocalPlayer({
           id: localStorage.getItem("playerId") ?? window.crypto.randomUUID(),
           nickname: localStorage.getItem("nickname") ?? "",
@@ -45,11 +47,11 @@ const { Provider: LocalPlayerProvider, use: useLocalPlayer } =
   );
 
 function joinRoom() {
+  const Peer = usePeerJS().Peer()!;
+  const peer = new Peer(window.crypto.randomUUID());
+  setLocalPlayer({ peer });
   const { room, setRoom } = useRoom();
-  const { createPeer } = usePeerJS();
-  const peer = createPeer(localPlayer.id!);
   const roomId = room.id!;
-
   peer
     .on("error", (error) => {
       console.warn({ roomId, error });
@@ -66,6 +68,7 @@ function joinRoom() {
           setRoom("connection", roomConnection);
           roomConnection.send(
             new DataEvent("PLAYER_INITIAL_INFO", {
+              id: localPlayer.id!,
               nickname: localPlayer.nickname!,
               avatarSeed: localPlayer.avatarSeed!,
             })

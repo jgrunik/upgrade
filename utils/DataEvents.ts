@@ -1,11 +1,12 @@
 export { DataEvent, DataEventHandlers, type DataEventType };
 
-import onMessage from "../data-events/onMessage";
-import onPlayerInitialise from "../data-events/onPlayerInitialise";
+import onPlayerInitialise from "../data-events/onPlayerInitialInfo";
+import onRoomUpdate from "../data-events/onRoomUpdate";
 
 const DataEventHandlers = {
-  ...onMessage,
+  // ...onMessage,
   ...onPlayerInitialise,
+  ...onRoomUpdate,
 };
 
 type DataEventType = keyof typeof DataEventHandlers;

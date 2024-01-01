@@ -17,7 +17,7 @@ type Room = {
   players: Player[];
   /** The network connection from the local player to the room */
   connection?: DataConnection;
-  /** Any error with the room */
+  /** Any error from the room */
   error?: AnyError;
 };
 

@@ -1,4 +1,8 @@
-.content {
+.tabs > .content {
   height: 65dvh;
   width: 65dvw;
+}
+
+#start_game_button {
+  place-self: center;
 }
