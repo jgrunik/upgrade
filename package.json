@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@solid-primitives/event-bus": "^1.0.8",
+    "@solid-primitives/keyboard": "^1.2.5",
     "papercss": "^1.9.2",
     "peerjs": "^1.5.2",
     "solid-js": "^1.8.7",

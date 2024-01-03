@@ -2,8 +2,7 @@ import { createEffect, on } from "solid-js";
 import AlertModal from "../../components/AlertModal";
 import { useRoom } from "../../contexts/room";
 import { useUI } from "../../contexts/ui";
-import Compose from "../../utils/Compose";
-import contexts from "../../utils/contexts";
+import Contexts from "./Contexts";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Page.css";
@@ -49,12 +48,14 @@ export default function IndexPage() {
     )
   );
 
+  const Content = () => <main>{UI.scene.component()}</main>;
+
   return (
-    <Compose components={contexts}>
+    <Contexts>
       <Header />
-      <main>{UI.scene.component()}</main>
+      <Content />
       <Footer />
       <AlertModal />
-    </Compose>
+    </Contexts>
   );
 }

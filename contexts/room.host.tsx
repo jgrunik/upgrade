@@ -3,7 +3,7 @@ export { createHostRoom, useHostRoom, type HostRoom, type HostedPlayer };
 import { type DataConnection } from "peerjs";
 import { type SetStoreFunction } from "solid-js/store";
 import { DataEventHandlers, type DataEventType } from "../utils/DataEvents";
-import { usePeerJS } from "./peer";
+import { usePeerJS } from "./peerjs";
 import { type Player } from "./player";
 import { useRoom, type Room } from "./room";
 

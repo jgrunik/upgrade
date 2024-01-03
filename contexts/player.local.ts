@@ -2,7 +2,6 @@ export { LocalPlayerProvider, joinRoom, useLocalPlayer, type LocalPlayer };
 
 import Peer from "peerjs";
 import { createStore } from "solid-js/store";
-import { usePeerJS } from "../contexts/peer";
 import {
   DataEvent,
   DataEventHandlers,
@@ -10,6 +9,7 @@ import {
 } from "../utils/DataEvents";
 import { createContextProvider } from "../utils/createContextProvider";
 import createPersistance from "../utils/createPersistance";
+import { usePeerJS } from "./peerjs";
 import { Player } from "./player";
 import { useRoom } from "./room";
 
@@ -50,8 +50,10 @@ function joinRoom() {
   const Peer = usePeerJS().Peer()!;
   const peer = new Peer(window.crypto.randomUUID());
   setLocalPlayer({ peer });
+
   const { room, setRoom } = useRoom();
   const roomId = room.id!;
+
   peer
     .on("error", (error) => {
       console.warn({ roomId, error });
