@@ -135,7 +135,8 @@ _Adjust any of these to suit your group's playstyle:_
 
 ### _Bowing on a draw_
 
-When an attack is equal to defence; it is customary for both players to put their hands together, face each other, and bow; as a sign of respect.\
+When an attack is equal to defence; it is customary for both players to put their hands together, face each other, and bow; as a sign of respect.\  
+
 _Note: Doing otherwise may be considered poor sportsmanship!_
 
 ## Additional Resources
@@ -146,27 +147,3 @@ _Other combat card games:_
 
 - [Card Games: Combat Games [pagat]](https://www.pagat.com/combat/)
 - [Cuttle [boardgamegeek]](https://boardgamegeek.com/boardgame/115370/cuttle)
-
-<br/>
-
-# Developer Stuff
-
-To install dependencies:
-
-```bash
-bun install
-```
-
-To serve:
-
-```bash
-bun run serve
-```
-
-To build:
-
-```bash
-bun run build
-```
-
-This project was created using `bun init` in bun v1.0.12. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
