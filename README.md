@@ -135,7 +135,7 @@ _Adjust any of these to suit your group's playstyle:_
 
 ### _Bowing on a draw_
 
-When an attack is equal to defence; it is customary for both players to put their hands together, face each other, and bow; as a sign of respect.\  
+When an attack is equal to defence; it is customary for both players to put their hands together, face each other, and bow; as a sign of respect.  
 
 _Note: Doing otherwise may be considered poor sportsmanship!_
 
